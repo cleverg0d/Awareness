@@ -152,14 +152,28 @@ errors instead. If you're running this inside a VM or a headless box and need to
 server from your host machine's browser, add `-- --host 0.0.0.0` to the command - by default Vite
 only binds to `localhost` inside the VM.
 
+## Upgrading
+
+```bash
+git pull
+docker compose up -d --build
+```
+
+That's it for a routine upgrade - employees, courses, and quiz results live in named Docker
+volumes that rebuilding never touches, and the `backend` container applies pending database
+migrations on its own at startup. The one thing to never run against a live deployment is
+`docker compose down -v` - the `-v` flag deletes those volumes, database included, for good. Check
+[CHANGELOG.md](CHANGELOG.md) for the version you're upgrading to before you start, and see
+[docs/upgrading.md](docs/upgrading.md) for backing up the database first, rolling back, and
+deploying from a specific version tag instead of a moving `main`.
+
 ## Documentation
 
 The API contract for external services, including authentication, endpoints, and rate limits, is
 described in [docs/integrations-api.md](docs/integrations-api.md). A step-by-step administrator
 guide (deployment, LDAP and notification setup, creating a course, launching training, handling
 at-risk employees) lives in [docs/admin-guide.md](docs/admin-guide.md). Version history is in
-[CHANGELOG.md](CHANGELOG.md), and how to upgrade without losing your database is in
-[docs/upgrading.md](docs/upgrading.md).
+[CHANGELOG.md](CHANGELOG.md).
 
 ## Project structure
 
