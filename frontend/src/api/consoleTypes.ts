@@ -105,6 +105,18 @@ export interface ConsoleLdapSettings {
   updated_at: string;
 }
 
+export interface ConsoleSecuritySettings {
+  login_lockout_enabled: boolean;
+}
+
+export interface ConsoleLoginLog {
+  id: number;
+  email: string;
+  ip_address: string | null;
+  success: boolean;
+  created_at: string;
+}
+
 export interface WaveStats {
   status_counts: { not_started: number; in_progress: number; passed: number; failed: number };
   dept_labels: string[];

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,8 +9,10 @@ from .console_serializers import (
     EmployeeAdminSerializer,
     EmployeeRoleSerializer,
     LdapSettingsSerializer,
+    LoginAttemptLogSerializer,
+    SecuritySettingsSerializer,
 )
-from .models import Department, LdapSettings, User
+from .models import Department, LdapSettings, LoginAttemptLog, SecuritySettings, User
 from .permissions import IsSuperAdmin
 from .services import reset_user_password
 
@@ -122,3 +124,28 @@ class LdapTestConnectionView(APIView):
                 conn.unbind_s()
             except ldap.LDAPError:
                 pass
+
+
+class SecuritySettingsView(APIView):
+    """Единственная запись переключателей защиты входа - читается/правится из консоли,
+    применяется сразу (LoginView читает ее при каждой попытке входа)."""
+
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        return Response(SecuritySettingsSerializer(SecuritySettings.get_solo()).data)
+
+    def patch(self, request):
+        config = SecuritySettings.get_solo()
+        serializer = SecuritySettingsSerializer(config, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+class LoginAttemptLogListView(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Последние 200 попыток входа (успешных и нет) - журнал для аудита."""
+
+    queryset = LoginAttemptLog.objects.order_by("-created_at")[:200]
+    serializer_class = LoginAttemptLogSerializer
+    permission_classes = [IsSuperAdmin]

@@ -131,3 +131,43 @@ class LdapSettings(models.Model):
     def get_solo(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class SecuritySettings(models.Model):
+    """Единственная запись (singleton) - переключатели защиты входа, редактируемые из консоли."""
+
+    login_lockout_enabled = models.BooleanField(
+        "Блокировка аккаунта после серии неверных паролей",
+        default=True,
+        help_text="При выключении остается только ограничение по IP на сам эндпоинт входа.",
+    )
+
+    class Meta:
+        verbose_name = "Настройки безопасности входа"
+        verbose_name_plural = "Настройки безопасности входа"
+
+    def __str__(self):
+        return "Настройки безопасности входа"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class LoginAttemptLog(models.Model):
+    """Журнал каждой попытки входа (успешной и нет) - для аудита, кто и откуда пытался войти."""
+
+    email = models.CharField("Введенный email", max_length=255)
+    ip_address = models.GenericIPAddressField("IP-адрес", null=True, blank=True)
+    success = models.BooleanField("Успешно")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Запись журнала входа"
+        verbose_name_plural = "Журнал входов"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        status = "успешно" if self.success else "неудачно"
+        return f"{self.email} - {status} - {self.created_at:%Y-%m-%d %H:%M}"

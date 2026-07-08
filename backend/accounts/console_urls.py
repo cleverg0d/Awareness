@@ -7,6 +7,8 @@ from .console_api import (
     EmployeeRoleView,
     LdapSettingsView,
     LdapTestConnectionView,
+    LoginAttemptLogListView,
+    SecuritySettingsView,
 )
 
 urlpatterns = [
@@ -16,4 +18,6 @@ urlpatterns = [
     path("employees/<int:pk>/role/", EmployeeRoleView.as_view(), name="console-employee-role"),
     path("ldap-settings/", LdapSettingsView.as_view(), name="console-ldap-settings"),
     path("ldap-settings/test/", LdapTestConnectionView.as_view(), name="console-ldap-settings-test"),
+    path("security-settings/", SecuritySettingsView.as_view(), name="console-security-settings"),
+    path("login-logs/", LoginAttemptLogListView.as_view({"get": "list"}), name="console-login-logs"),
 ]

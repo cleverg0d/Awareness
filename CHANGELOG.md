@@ -17,6 +17,14 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.2.0] - 2026-07-08
+
+✚ The new account-lockout protection can be switched off from "Integrations → Login protection"
+if it ever gets in the way, without losing the per-IP rate limit on the login page.
+
+✚ A login log now records every attempt, successful or not, with the email used and the source
+IP, viewable from the same section.
+
 ## [1.1.0] - 2026-07-08
 
 ✚ Login is now protected against password guessing at the account level, not just per IP: after 5

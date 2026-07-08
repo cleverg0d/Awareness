@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../../api/client";
-import type { ConsoleCourse, ConsoleIntegrationLog, ConsoleIntegrationToken, ConsoleLdapSettings } from "../../api/consoleTypes";
+import type {
+  ConsoleCourse,
+  ConsoleIntegrationLog,
+  ConsoleIntegrationToken,
+  ConsoleLdapSettings,
+  ConsoleLoginLog,
+  ConsoleSecuritySettings,
+} from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
 import { formatDate } from "../../utils/date";
-import { ChevronDownIcon, KeyIcon, ServerIcon, TrashIcon } from "../../components/icons";
+import { ChevronDownIcon, KeyIcon, ServerIcon, ShieldIcon, TrashIcon } from "../../components/icons";
 import { AccordionShell } from "../components/AccordionShell";
 
 const inputClass =
@@ -161,6 +168,90 @@ function LdapSection() {
             >
               {testing ? t("consoleLdap.testing") : t("consoleLdap.testConnection")}
             </button>
+          </div>
+        </>
+      )}
+    </AccordionShell>
+  );
+}
+
+function LoginSecuritySection() {
+  const { t } = useTranslation();
+  const [settings, setSettings] = useState<ConsoleSecuritySettings | null>(null);
+  const [logs, setLogs] = useState<ConsoleLoginLog[] | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.get<ConsoleSecuritySettings>("/api/console/security-settings/").then(setSettings);
+    api.get<ConsoleLoginLog[]>("/api/console/login-logs/").then(setLogs);
+  }, []);
+
+  async function toggleLockout(checked: boolean) {
+    setError(null);
+    setSaving(true);
+    try {
+      const updated = await api.patch<ConsoleSecuritySettings>("/api/console/security-settings/", {
+        login_lockout_enabled: checked,
+      });
+      setSettings(updated);
+    } catch (err) {
+      setError(err instanceof ApiError ? JSON.stringify(err.detail) : t("consoleSecurity.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <AccordionShell icon={<ShieldIcon />} title={t("consoleSecurity.title")} enabled={!!settings?.login_lockout_enabled} loading={!settings}>
+      {settings && (
+        <>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("consoleSecurity.subtitle")}</p>
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+            <input
+              type="checkbox"
+              checked={settings.login_lockout_enabled}
+              disabled={saving}
+              onChange={(e) => toggleLockout(e.target.checked)}
+              className="h-4 w-4"
+            />
+            {t("consoleSecurity.lockoutToggle")}
+          </label>
+          <p className="text-xs text-slate-400 dark:text-slate-500">{t("consoleSecurity.lockoutHint")}</p>
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+          <div className="border-t border-slate-100 dark:border-slate-700 pt-4 mt-2">
+            <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 pb-2">{t("consoleSecurity.logHeading")}</h2>
+            {logs?.length === 0 ? (
+              <p className="text-sm text-slate-400 dark:text-slate-500">{t("consoleSecurity.noLogs")}</p>
+            ) : (
+              <div className="max-h-80 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-lg">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-left sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colEmail")}</th>
+                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colIp")}</th>
+                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colResult")}</th>
+                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colWhen")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs?.map((log) => (
+                      <tr key={log.id} className="border-t border-slate-100 dark:border-slate-700">
+                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{log.email}</td>
+                        <td className="px-3 py-2 text-slate-500 dark:text-slate-400 font-mono text-xs">{log.ip_address ?? t("consoleSecurity.noIp")}</td>
+                        <td className="px-3 py-2">
+                          <span className={log.success ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>
+                            {log.success ? t("consoleSecurity.resultSuccess") : t("consoleSecurity.resultFailed")}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2 text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">{formatDate(log.created_at)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -369,6 +460,7 @@ export function ConsoleIntegrationsPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("consoleIntegrations.subtitle")}</p>
       </div>
       <LdapSection />
+      <LoginSecuritySection />
       <ApiTokensSection />
     </div>
   );

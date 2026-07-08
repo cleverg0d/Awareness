@@ -1,6 +1,16 @@
 import secrets
 
 
+def get_client_ip(request):
+    """nginx всегда стоит перед Django в этом деплое (backend не публикует порт наружу), поэтому
+    X-Forwarded-For можно доверять безусловно - REMOTE_ADDR иначе показал бы адрес контейнера
+    nginx, а не настоящего клиента."""
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR")
+
+
 def reset_user_password(user):
     """Генерирует временный пароль, сохраняет и требует смены при следующем входе. Заодно снимает
     блокировку за неудачные попытки входа - иначе сотрудник с новым паролем от админа все равно

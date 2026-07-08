@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Department, LdapSettings, User
+from .models import Department, LdapSettings, LoginAttemptLog, SecuritySettings, User
 
 
 class DepartmentAdminSerializer(serializers.ModelSerializer):
@@ -64,3 +64,15 @@ class LdapSettingsSerializer(serializers.ModelSerializer):
             instance.bind_password = new_password
         instance.save()
         return instance
+
+
+class SecuritySettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecuritySettings
+        fields = ["login_lockout_enabled"]
+
+
+class LoginAttemptLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoginAttemptLog
+        fields = ["id", "email", "ip_address", "success", "created_at"]

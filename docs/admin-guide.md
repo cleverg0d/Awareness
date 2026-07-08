@@ -38,6 +38,10 @@ that console flow on yourself, run this from wherever the containers are deploye
 docker compose exec backend python manage.py unlock_account admin@yourcompany.com
 ```
 
+The lockout can be turned off entirely from "Integrations → Login protection" if it ever gets in
+the way - the per-IP rate limit still applies either way. The same section shows a log of every
+login attempt, successful or not, with the email used and the IP it came from.
+
 ## Roles
 
 Employees have three access levels: a regular employee just takes assigned training and never sees
