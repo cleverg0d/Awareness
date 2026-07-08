@@ -27,6 +27,11 @@ Employees who don't exist yet are created automatically on their first domain lo
 take effect immediately without restarting containers, so you can hit "Test connection" before
 saving anything.
 
+Login is also protected against password guessing: after 5 wrong passwords in a row, that
+specific account is locked for 15 minutes, even with the correct password, on top of a per-IP rate
+limit on the login endpoint itself. If an employee is legitimately locked out and needs in sooner,
+resetting their password from the "Employees" section also clears the lockout.
+
 ## Roles
 
 Employees have three access levels: a regular employee just takes assigned training and never sees

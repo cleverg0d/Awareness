@@ -8,7 +8,10 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
+from .models import User
 from .serializers import UserSerializer
+
+GENERIC_LOGIN_ERROR = {"detail": "Неверный email или пароль"}
 
 
 class CsrfView(APIView):
@@ -31,9 +34,23 @@ class LoginView(APIView):
     def post(self, request):
         email = (request.data.get("email") or "").strip().lower()
         password = request.data.get("password") or ""
+
+        # Блокировка по аккаунту - отдельно от IP-throttle на самом view, чтобы перебор пароля
+        # одного сотрудника с многих IP тоже упирался в предел. Сообщение то же самое, что и на
+        # неверный пароль/несуществующий email - иначе по факту блокировки можно было бы узнать,
+        # что аккаунт вообще существует.
+        existing = User.objects.filter(email__iexact=email).first()
+        if existing and existing.is_locked_out():
+            return Response(GENERIC_LOGIN_ERROR, status=status.HTTP_401_UNAUTHORIZED)
+
         user = authenticate(request, username=email, password=password)
         if user is None or not user.is_active:
-            return Response({"detail": "Неверный email или пароль"}, status=status.HTTP_401_UNAUTHORIZED)
+            if existing:
+                existing.register_failed_login()
+            return Response(GENERIC_LOGIN_ERROR, status=status.HTTP_401_UNAUTHORIZED)
+
+        if user.failed_login_attempts or user.locked_until:
+            user.clear_lockout()
         login(request, user)
         return Response(UserSerializer(user).data)
 

@@ -1,5 +1,11 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+
+LOGIN_LOCKOUT_THRESHOLD = 5
+LOGIN_LOCKOUT_DURATION = timedelta(minutes=15)
 
 
 class Department(models.Model):
@@ -39,6 +45,8 @@ class User(AbstractUser):
         default=True,
         help_text="Включено для новых учеток - пользователь обязан сменить пароль при первом входе.",
     )
+    failed_login_attempts = models.PositiveIntegerField("Неудачных попыток входа подряд", default=0)
+    locked_until = models.DateTimeField("Заблокирован до", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["full_name"]
@@ -69,6 +77,22 @@ class User(AbstractUser):
             raise ValueError(f"Неизвестная роль: {role}")
         self.is_staff = role in (self.ROLE_MANAGER, self.ROLE_ADMIN)
         self.is_superuser = role == self.ROLE_ADMIN
+
+    def is_locked_out(self):
+        return bool(self.locked_until and self.locked_until > timezone.now())
+
+    def register_failed_login(self):
+        """Отдельно от IP-throttle на LoginView - защищает конкретный аккаунт от подбора пароля
+        распределенного по многим IP, где ограничение по IP не сработает."""
+        self.failed_login_attempts += 1
+        if self.failed_login_attempts >= LOGIN_LOCKOUT_THRESHOLD:
+            self.locked_until = timezone.now() + LOGIN_LOCKOUT_DURATION
+        self.save(update_fields=["failed_login_attempts", "locked_until"])
+
+    def clear_lockout(self):
+        self.failed_login_attempts = 0
+        self.locked_until = None
+        self.save(update_fields=["failed_login_attempts", "locked_until"])
 
 
 class LdapSettings(models.Model):

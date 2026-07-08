@@ -17,6 +17,13 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.1.0] - 2026-07-08
+
+✚ Login is now protected against password guessing at the account level, not just per IP: after 5
+wrong passwords in a row, that account is locked for 15 minutes regardless of which IP the next
+attempt comes from. Resetting an employee's password from the console also clears an active
+lockout.
+
 ## [1.0.1] - 2026-07-07
 
 ✓ Removed technical details of pre-release bugs and vulnerabilities from the 1.0.0 entry in this
