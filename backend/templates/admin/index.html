@@ -1,0 +1,7 @@
+{% extends "admin/index.html" %}
+{% block content %}
+<div style="margin-bottom:16px">
+  <a href="{% url 'admin-dashboard' %}" class="button">📊 Дашборд обучения по ИБ</a>
+</div>
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Назначить волну по отделам</h1>
+<p>Волны: {% for w in waves %}{{ w.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+<form method="post">
+  {% csrf_token %}
+  {% for obj in waves %}<input type="hidden" name="_selected_action" value="{{ obj.pk }}">{% endfor %}
+  <input type="hidden" name="action" value="assign_by_department">
+  {{ form.as_p }}
+  <input type="submit" name="apply" value="Назначить">
+</form>
+{% endblock %}

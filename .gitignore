@@ -1,0 +1,11 @@
+*.pyc
+__pycache__/
+backend/.venv/
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+.env
+.DS_Store
+.claude
+graphify-out/
+.graphifyignore

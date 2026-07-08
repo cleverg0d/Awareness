@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="get" style="margin-bottom:20px">
+  <label for="wave">Волна:</label>
+  <select name="wave" id="wave" onchange="this.form.submit()">
+    {% for w in waves %}
+      <option value="{{ w.id }}" {% if selected_wave and w.id == selected_wave.id %}selected{% endif %}>{{ w.name }} ({{ w.course.title }})</option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if selected_wave %}
+<p>
+  Курс: <strong>{{ selected_wave.course.title }}</strong> ·
+  Дедлайн: <strong>{{ selected_wave.deadline }}</strong> ·
+  Порог сдачи: <strong>{{ selected_wave.pass_threshold }}%</strong>
+  {% if selected_wave.is_overdue %}<span style="color:#dc2626;font-weight:600"> · ПРОСРОЧЕНА</span>{% endif %}
+  ·
+  <a href="{% url 'admin-dashboard-export' selected_wave.id %}">Экспорт CSV</a>
+</p>
+
+<div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:24px">
+  <div style="width:320px">
+    <h3>Статусы прохождения</h3>
+    <canvas id="statusChart"></canvas>
+  </div>
+  <div style="width:420px">
+    <h3>По отделам (сдано / всего)</h3>
+    <canvas id="deptChart"></canvas>
+  </div>
+  <div style="width:420px">
+    <h3>Распределение баллов</h3>
+    <canvas id="scoreChart"></canvas>
+  </div>
+</div>
+
+{{ status_counts|json_script:"status-data" }}
+{{ dept_labels|json_script:"dept-labels" }}
+{{ dept_totals|json_script:"dept-totals" }}
+{{ dept_passed|json_script:"dept-passed" }}
+{{ score_labels|json_script:"score-labels" }}
+{{ score_hist|json_script:"score-hist" }}
+
+<script src="{% static 'admin_dashboard/chart.umd.min.js' %}"></script>
+<script>
+(function () {
+  const statusData = JSON.parse(document.getElementById('status-data').textContent);
+  new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Не начато', 'В процессе', 'Сдано', 'Не сдано'],
+      datasets: [{
+        data: [statusData.not_started, statusData.in_progress, statusData.passed, statusData.failed],
+        backgroundColor: ['#9ca3af', '#f59e0b', '#16a34a', '#dc2626'],
+      }],
+    },
+  });
+
+  const deptLabels = JSON.parse(document.getElementById('dept-labels').textContent);
+  const deptTotals = JSON.parse(document.getElementById('dept-totals').textContent);
+  const deptPassed = JSON.parse(document.getElementById('dept-passed').textContent);
+  new Chart(document.getElementById('deptChart'), {
+    type: 'bar',
+    data: {
+      labels: deptLabels,
+      datasets: [
+        { label: 'Всего назначено', data: deptTotals, backgroundColor: '#9ca3af' },
+        { label: 'Сдано', data: deptPassed, backgroundColor: '#16a34a' },
+      ],
+    },
+    options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } },
+  });
+
+  const scoreLabels = JSON.parse(document.getElementById('score-labels').textContent);
+  const scoreHist = JSON.parse(document.getElementById('score-hist').textContent);
+  new Chart(document.getElementById('scoreChart'), {
+    type: 'bar',
+    data: {
+      labels: scoreLabels,
+      datasets: [{ label: 'Сотрудников', data: scoreHist, backgroundColor: '#2563eb' }],
+    },
+    options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } },
+  });
+})();
+</script>
+{% else %}
+<p>Нет ни одной волны обучения. Создайте волну в разделе «Волны обучения».</p>
+{% endif %}
+{% endblock %}
