@@ -30,7 +30,13 @@ saving anything.
 Login is also protected against password guessing: after 5 wrong passwords in a row, that
 specific account is locked for 15 minutes, even with the correct password, on top of a per-IP rate
 limit on the login endpoint itself. If an employee is legitimately locked out and needs in sooner,
-resetting their password from the "Employees" section also clears the lockout.
+resetting their password from the "Employees" section also clears the lockout. If you're the
+locked-out account yourself (someone guessing your own password, or your own typo) and can't use
+that console flow on yourself, run this from wherever the containers are deployed:
+
+```bash
+docker compose exec backend python manage.py unlock_account admin@yourcompany.com
+```
 
 ## Roles
 

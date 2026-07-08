@@ -83,7 +83,13 @@ class User(AbstractUser):
 
     def register_failed_login(self):
         """Отдельно от IP-throttle на LoginView - защищает конкретный аккаунт от подбора пароля
-        распределенного по многим IP, где ограничение по IP не сработает."""
+        распределенного по многим IP, где ограничение по IP не сработает. Если предыдущая
+        блокировка уже истекла, счетчик сбрасывается перед новым инцидентом - иначе он рос бы
+        бесконечно и любая одна случайная опечатка через день после первой блокировки снова
+        блокировала бы аккаунт."""
+        if self.locked_until and self.locked_until <= timezone.now():
+            self.failed_login_attempts = 0
+            self.locked_until = None
         self.failed_login_attempts += 1
         if self.failed_login_attempts >= LOGIN_LOCKOUT_THRESHOLD:
             self.locked_until = timezone.now() + LOGIN_LOCKOUT_DURATION
