@@ -33,12 +33,40 @@ If the frontend nginx returns 502 for API calls right after rebuilding `backend`
 logs look clean, restart the frontend: `docker compose restart frontend`. This isn't data loss -
 nginx just cached the old backend container's IP during the rebuild.
 
+## Routine upgrade (manual installation, without Docker)
+
+There are no volumes to worry about here - the database is whatever Postgres instance you pointed
+`POSTGRES_*` at, and it's untouched by any of this:
+
+```bash
+git pull
+cd backend
+source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+```
+
+Then restart whatever is running `manage.py runserver` (or your actual WSGI process, if you set
+one up), and for the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev   # or npm run build if you're serving it yourself
+```
+
 ## Database backup and restore
 
 Back up before upgrading:
 
 ```bash
 docker compose exec db pg_dump -U awareness awareness > backup-$(date +%Y-%m-%d).sql
+```
+
+On a manual installation, run `pg_dump` directly against whatever Postgres you configured instead:
+
+```bash
+pg_dump -U awareness -h 127.0.0.1 awareness > backup-$(date +%Y-%m-%d).sql
 ```
 
 Restore (if something goes wrong - roll back the code to the previous version first, then the

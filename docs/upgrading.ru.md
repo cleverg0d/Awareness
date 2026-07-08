@@ -34,12 +34,40 @@
 чистые - перезапустите фронтенд: `docker compose restart frontend`. Это не потеря данных, просто
 nginx закэшировал IP старого контейнера backend при пересборке.
 
+## Обычное обновление (ручная установка, без Docker)
+
+Здесь никаких томов нет - база это тот Postgres, на который указывают `POSTGRES_*`, и она никак
+не затрагивается ничем из этого:
+
+```bash
+git pull
+cd backend
+source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+```
+
+Дальше перезапустите то, чем у вас поднят `manage.py runserver` (или свой WSGI-процесс, если
+настроили), и для фронтенда:
+
+```bash
+cd frontend
+npm install
+npm run dev   # или npm run build, если раздаете сборку сами
+```
+
 ## Бэкап и восстановление базы
 
 Бэкап перед обновлением:
 
 ```bash
 docker compose exec db pg_dump -U awareness awareness > backup-$(date +%Y-%m-%d).sql
+```
+
+При ручной установке выполните `pg_dump` напрямую против того Postgres, что настроили:
+
+```bash
+pg_dump -U awareness -h 127.0.0.1 awareness > backup-$(date +%Y-%m-%d).sql
 ```
 
 Восстановление (если что-то пошло не так - сначала откатите код на предыдущую версию, потом базу):

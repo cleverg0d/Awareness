@@ -9,6 +9,7 @@ import {
   ArrowLeftIcon,
   BellIcon,
   BookIcon,
+  ClockIcon,
   DashboardIcon,
   ExternalLinkIcon,
   LinkIcon,
@@ -41,6 +42,7 @@ export function ConsoleLayout() {
           { to: "/console/employees", label: t("console.nav.employees"), icon: <UsersIcon /> },
           { to: "/console/integrations", label: t("console.nav.integrations"), icon: <LinkIcon /> },
           { to: "/console/notifications", label: t("console.nav.notifications"), icon: <BellIcon /> },
+          { to: "/console/logs", label: t("console.nav.logs"), icon: <ClockIcon /> },
         ]
       : []),
   ];

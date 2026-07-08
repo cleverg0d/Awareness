@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../../api/client";
-import type {
-  ConsoleCourse,
-  ConsoleIntegrationLog,
-  ConsoleIntegrationToken,
-  ConsoleLdapSettings,
-  ConsoleLoginLog,
-  ConsoleSecuritySettings,
-} from "../../api/consoleTypes";
+import type { ConsoleCourse, ConsoleIntegrationToken, ConsoleLdapSettings, ConsoleSecuritySettings } from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
 import { formatDate } from "../../utils/date";
 import { ChevronDownIcon, KeyIcon, ServerIcon, ShieldIcon, TrashIcon } from "../../components/icons";
@@ -178,13 +171,11 @@ function LdapSection() {
 function LoginSecuritySection() {
   const { t } = useTranslation();
   const [settings, setSettings] = useState<ConsoleSecuritySettings | null>(null);
-  const [logs, setLogs] = useState<ConsoleLoginLog[] | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api.get<ConsoleSecuritySettings>("/api/console/security-settings/").then(setSettings);
-    api.get<ConsoleLoginLog[]>("/api/console/login-logs/").then(setLogs);
   }, []);
 
   async function toggleLockout(checked: boolean) {
@@ -219,40 +210,6 @@ function LoginSecuritySection() {
           </label>
           <p className="text-xs text-slate-400 dark:text-slate-500">{t("consoleSecurity.lockoutHint")}</p>
           {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
-
-          <div className="border-t border-slate-100 dark:border-slate-700 pt-4 mt-2">
-            <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 pb-2">{t("consoleSecurity.logHeading")}</h2>
-            {logs?.length === 0 ? (
-              <p className="text-sm text-slate-400 dark:text-slate-500">{t("consoleSecurity.noLogs")}</p>
-            ) : (
-              <div className="max-h-80 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-lg">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-left sticky top-0">
-                    <tr>
-                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colEmail")}</th>
-                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colIp")}</th>
-                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colResult")}</th>
-                      <th className="px-3 py-2 font-medium">{t("consoleSecurity.colWhen")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {logs?.map((log) => (
-                      <tr key={log.id} className="border-t border-slate-100 dark:border-slate-700">
-                        <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{log.email}</td>
-                        <td className="px-3 py-2 text-slate-500 dark:text-slate-400 font-mono text-xs">{log.ip_address ?? t("consoleSecurity.noIp")}</td>
-                        <td className="px-3 py-2">
-                          <span className={log.success ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>
-                            {log.success ? t("consoleSecurity.resultSuccess") : t("consoleSecurity.resultFailed")}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2 text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">{formatDate(log.created_at)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
         </>
       )}
     </AccordionShell>
@@ -262,7 +219,6 @@ function LoginSecuritySection() {
 function ApiTokensSection() {
   const { t } = useTranslation();
   const [tokens, setTokens] = useState<ConsoleIntegrationToken[] | null>(null);
-  const [logs, setLogs] = useState<ConsoleIntegrationLog[] | null>(null);
   const [courses, setCourses] = useState<ConsoleCourse[] | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [name, setName] = useState("");
@@ -274,7 +230,6 @@ function ApiTokensSection() {
 
   function reload() {
     api.get<ConsoleIntegrationToken[]>("/api/console/integration-tokens/").then(setTokens);
-    api.get<ConsoleIntegrationLog[]>("/api/console/integration-logs/").then(setLogs);
     api.get<ConsoleCourse[]>("/api/console/courses/").then(setCourses);
   }
 
@@ -415,30 +370,6 @@ function ApiTokensSection() {
                       >
                         <TrashIcon />
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        <div className="border-t border-slate-100 dark:border-slate-700">
-          <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 px-5 pt-4 pb-2">{t("consoleIntegrations.logHeading")}</h2>
-          {logs?.length === 0 ? (
-            <p className="text-sm text-slate-400 dark:text-slate-500 px-5 pb-4">{t("consoleIntegrations.noLogs")}</p>
-          ) : (
-            <table className="w-full text-sm">
-              <tbody>
-                {logs?.map((log) => (
-                  <tr key={log.id} className="border-t border-slate-100 dark:border-slate-700">
-                    <td className="px-5 py-2 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">{formatDate(log.created_at)}</td>
-                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">
-                      {log.token_name_snapshot} → {log.employee_email}
-                      {log.course_title && <span className="text-slate-400 dark:text-slate-500"> ({log.course_title})</span>}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <span className={log.success ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{log.message}</span>
                     </td>
                   </tr>
                 ))}

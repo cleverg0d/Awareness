@@ -16,6 +16,7 @@ import { ConsoleProblemEmployeesPage } from "./console/pages/ConsoleProblemEmplo
 import { ConsoleEmployeesPage } from "./console/pages/ConsoleEmployeesPage";
 import { ConsoleIntegrationsPage } from "./console/pages/ConsoleIntegrationsPage";
 import { ConsoleNotificationsPage } from "./console/pages/ConsoleNotificationsPage";
+import { ConsoleLogsPage } from "./console/pages/ConsoleLogsPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -93,6 +94,14 @@ function App() {
           element={
             <SuperAdminRoute>
               <ConsoleNotificationsPage />
+            </SuperAdminRoute>
+          }
+        />
+        <Route
+          path="logs"
+          element={
+            <SuperAdminRoute>
+              <ConsoleLogsPage />
             </SuperAdminRoute>
           }
         />

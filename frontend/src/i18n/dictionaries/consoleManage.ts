@@ -131,6 +131,13 @@ export const consoleManageRu = {
     resultFailed: "Неудачно",
     noIp: "-",
   },
+  consoleLogs: {
+    title: "Журналы",
+    subtitle: "Все журналы аудита в одном месте: входы, вызовы интеграций, отправка уведомлений.",
+    tabLogins: "Входы",
+    tabIntegrations: "Интеграции",
+    tabNotifications: "Уведомления",
+  },
   consoleIntegrations: {
     title: "Интеграции",
     subtitle: "Все подключения к внешним системам в одном месте: вход через корпоративный домен (LDAP/AD) и API-токены для сторонних сервисов.",
@@ -322,6 +329,13 @@ export const consoleManageEn = {
     resultSuccess: "Success",
     resultFailed: "Failed",
     noIp: "-",
+  },
+  consoleLogs: {
+    title: "Logs",
+    subtitle: "Every audit log in one place: sign-ins, integration calls, notification deliveries.",
+    tabLogins: "Sign-ins",
+    tabIntegrations: "Integrations",
+    tabNotifications: "Notifications",
   },
   consoleIntegrations: {
     title: "Integrations",

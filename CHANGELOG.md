@@ -17,6 +17,15 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.2.1] - 2026-07-08
+
+✓ The sign-in, integration, and notification logs were scattered across three different console
+pages - they now live together under a single "Logs" section, with the settings that used to sit
+next to them staying where they were.
+
+✓ The upgrade instructions only covered the Docker path - added the equivalent steps for a manual
+(non-Docker) installation.
+
 ## [1.2.0] - 2026-07-08
 
 ✚ The new account-lockout protection can be switched off from "Integrations → Login protection"

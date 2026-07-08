@@ -1,13 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { api, ApiError } from "../../api/client";
-import type {
-  ConsoleEmailSettings,
-  ConsoleNotificationLog,
-  ConsoleTelegramSettings,
-  ConsoleWebhookChannelSettings,
-} from "../../api/consoleTypes";
+import type { ConsoleEmailSettings, ConsoleTelegramSettings, ConsoleWebhookChannelSettings } from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
-import { formatDate } from "../../utils/date";
 import { ChatBubbleIcon, MailIcon, PaperPlaneIcon, UsersIcon } from "../../components/icons";
 import { AccordionShell } from "../components/AccordionShell";
 
@@ -268,40 +262,6 @@ function WebhookSection({ icon, title, urlPath }: { icon: ReactNode; title: stri
   );
 }
 
-function LogTable() {
-  const { t } = useTranslation();
-  const [logs, setLogs] = useState<ConsoleNotificationLog[] | null>(null);
-
-  useEffect(() => {
-    api.get<ConsoleNotificationLog[]>("/api/console/notification-logs/").then(setLogs);
-  }, []);
-
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 px-5 pt-4 pb-2">{t("consoleNotifications.logHeading")}</h2>
-      {logs?.length === 0 ? (
-        <p className="text-sm text-slate-400 dark:text-slate-500 px-5 pb-4">{t("consoleNotifications.noLogs")}</p>
-      ) : (
-        <table className="w-full text-sm">
-          <tbody>
-            {logs?.map((log) => (
-              <tr key={log.id} className="border-t border-slate-100 dark:border-slate-700">
-                <td className="px-5 py-2 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">{formatDate(log.created_at)}</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{log.channel}</td>
-                <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{log.event}</td>
-                <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{log.target}</td>
-                <td className="px-3 py-2 text-right">
-                  <span className={log.success ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{log.message}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
-}
-
 export function ConsoleNotificationsPage() {
   const { t } = useTranslation();
   return (
@@ -316,7 +276,6 @@ export function ConsoleNotificationsPage() {
         <WebhookSection icon={<ChatBubbleIcon />} title={t("consoleNotifications.slackTitle")} urlPath="slack" />
         <WebhookSection icon={<UsersIcon />} title={t("consoleNotifications.teamsTitle")} urlPath="teams" />
       </div>
-      <LogTable />
     </div>
   );
 }

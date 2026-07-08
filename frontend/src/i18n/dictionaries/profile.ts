@@ -25,6 +25,7 @@ export const profileRu = {
       employees: "Сотрудники",
       integrations: "Интеграции",
       notifications: "Уведомления",
+      logs: "Журналы",
     },
   },
 };
@@ -56,6 +57,7 @@ export const profileEn = {
       employees: "Employees",
       integrations: "Integrations",
       notifications: "Notifications",
+      logs: "Logs",
     },
   },
 };

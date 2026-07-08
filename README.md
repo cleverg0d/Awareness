@@ -159,13 +159,15 @@ git pull
 docker compose up -d --build
 ```
 
-That's it for a routine upgrade - employees, courses, and quiz results live in named Docker
-volumes that rebuilding never touches, and the `backend` container applies pending database
+That's it for a routine upgrade on Docker - employees, courses, and quiz results live in named
+Docker volumes that rebuilding never touches, and the `backend` container applies pending database
 migrations on its own at startup. The one thing to never run against a live deployment is
-`docker compose down -v` - the `-v` flag deletes those volumes, database included, for good. Check
-[CHANGELOG.md](CHANGELOG.md) for the version you're upgrading to before you start, and see
-[docs/upgrading.md](docs/upgrading.md) for backing up the database first, rolling back, and
-deploying from a specific version tag instead of a moving `main`.
+`docker compose down -v` - the `-v` flag deletes those volumes, database included, for good. If you
+installed manually instead (see below), it's just `git pull`, `pip install -r requirements.txt`,
+`python manage.py migrate`, and `npm install` - the full steps for both paths, plus backing up the
+database first, rolling back, and deploying from a specific version tag instead of a moving `main`,
+are in [docs/upgrading.md](docs/upgrading.md). Check [CHANGELOG.md](CHANGELOG.md) for the version
+you're upgrading to before you start.
 
 ## Documentation
 
