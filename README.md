@@ -152,6 +152,12 @@ errors instead. If you're running this inside a VM or a headless box and need to
 server from your host machine's browser, add `-- --host 0.0.0.0` to the command - by default Vite
 only binds to `localhost` inside the VM.
 
+For a real (non-dev) deployment without Docker, build the frontend with `npm run build` and serve
+it with your own nginx instead of `npm run dev`. `frontend/nginx.conf` is a ready-made config for
+that, but it targets the Docker Compose network - before reusing it, replace every
+`proxy_pass http://backend:8000/...;` with the actual host and port your Django process listens on
+(gunicorn or `manage.py runserver`), since `backend` only resolves inside Compose.
+
 ## Upgrading
 
 ```bash

@@ -17,6 +17,12 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.2.4] - 2026-07-08
+
+✓ `manage.py createsuperuser` crashed with `TypeError: ... missing 1 required positional
+argument: 'username'` on a fresh database - fixed. Docs also updated to say "Security" and "Logs"
+instead of the old "Integrations" location for the login-lockout toggle and log.
+
 ## [1.2.2] - 2026-07-08
 
 ✓ Login protection (account lockout) moved out of "Integrations" into its own "Security" section -
