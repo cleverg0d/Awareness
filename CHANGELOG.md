@@ -17,6 +17,11 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.2.2] - 2026-07-08
+
+✓ Login protection (account lockout) moved out of "Integrations" into its own "Security" section -
+it isn't really an external integration, and this leaves room for more security settings later.
+
 ## [1.2.1] - 2026-07-08
 
 ✓ The sign-in, integration, and notification logs were scattered across three different console

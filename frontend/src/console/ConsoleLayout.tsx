@@ -13,6 +13,7 @@ import {
   DashboardIcon,
   ExternalLinkIcon,
   LinkIcon,
+  ShieldIcon,
   UsersIcon,
   WaveIcon,
 } from "../components/icons";
@@ -42,6 +43,7 @@ export function ConsoleLayout() {
           { to: "/console/employees", label: t("console.nav.employees"), icon: <UsersIcon /> },
           { to: "/console/integrations", label: t("console.nav.integrations"), icon: <LinkIcon /> },
           { to: "/console/notifications", label: t("console.nav.notifications"), icon: <BellIcon /> },
+          { to: "/console/security", label: t("console.nav.security"), icon: <ShieldIcon /> },
           { to: "/console/logs", label: t("console.nav.logs"), icon: <ClockIcon /> },
         ]
       : []),

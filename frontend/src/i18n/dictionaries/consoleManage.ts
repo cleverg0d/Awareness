@@ -91,6 +91,10 @@ export const consoleManageRu = {
     passedNotFirstTry: "Сдал не с первого раза",
     notPassed: "Не сдал",
   },
+  consoleSecurityPage: {
+    title: "Безопасность",
+    subtitle: "Настройки, влияющие на защищенность портала. Пока здесь только защита входа - раздел будет пополняться.",
+  },
   consoleLdap: {
     title: "LDAP / Active Directory",
     subtitle:
@@ -289,6 +293,10 @@ export const consoleManageEn = {
     overdueSuffix: " · overdue",
     passedNotFirstTry: "Passed after a retry",
     notPassed: "Not passed",
+  },
+  consoleSecurityPage: {
+    title: "Security",
+    subtitle: "Settings that affect how secure the portal is. Only login protection lives here for now - this section will grow.",
   },
   consoleLdap: {
     title: "LDAP / Active Directory",
