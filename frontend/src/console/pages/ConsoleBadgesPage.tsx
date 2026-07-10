@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../../api/client";
-import type { ConsoleBadge, ConsoleBadgeSettings, ConsoleCourse } from "../../api/consoleTypes";
+import type { ConsoleBadge, ConsoleBadgeSettings, ConsoleCourse, ConsoleWave } from "../../api/consoleTypes";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "../../context/LanguageContext";
 
-const emptyForm = { name: "", description: "", course: "", is_active: true };
+const emptyForm = { name: "", description: "", course: "", wave: "", is_active: true };
 
 export function ConsoleBadgesPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [badges, setBadges] = useState<ConsoleBadge[] | null>(null);
   const [courses, setCourses] = useState<ConsoleCourse[] | null>(null);
+  const [waves, setWaves] = useState<ConsoleWave[] | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -24,6 +25,7 @@ export function ConsoleBadgesPage() {
   useEffect(() => {
     reload();
     api.get<ConsoleCourse[]>("/api/console/courses/").then(setCourses);
+    api.get<ConsoleWave[]>("/api/console/waves/").then(setWaves);
   }, []);
 
   function startCreate() {
@@ -40,6 +42,7 @@ export function ConsoleBadgesPage() {
       name: badge.name,
       description: badge.description,
       course: badge.course ? String(badge.course) : "",
+      wave: badge.wave ? String(badge.wave) : "",
       is_active: badge.is_active,
     });
     setIcon(null);
@@ -57,6 +60,7 @@ export function ConsoleBadgesPage() {
     body.append("name", form.name);
     body.append("description", form.description);
     if (form.course) body.append("course", form.course);
+    if (form.wave) body.append("wave", form.wave);
     body.append("is_active", String(form.is_active));
     if (icon) body.append("icon", icon);
 
@@ -119,6 +123,22 @@ export function ConsoleBadgesPage() {
                 ))}
               </select>
             </label>
+            <label className="text-sm text-slate-600 dark:text-slate-200">
+              {t("consoleBadges.wave")}
+              <select
+                value={form.wave}
+                onChange={(e) => setForm({ ...form, wave: e.target.value })}
+                className="mt-1 w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:text-slate-100"
+              >
+                <option value="">{t("consoleBadges.anyWave")}</option>
+                {waves?.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
+              <span className="block text-xs text-slate-400 dark:text-slate-500 mt-1">{t("consoleBadges.waveHint")}</span>
+            </label>
             <label className="text-sm text-slate-600 dark:text-slate-200 col-span-2">
               {t("consoleBadges.description")}
               <textarea
@@ -166,6 +186,7 @@ export function ConsoleBadgesPage() {
               <th className="px-4 py-2 font-medium"></th>
               <th className="px-4 py-2 font-medium">{t("consoleBadges.name")}</th>
               <th className="px-4 py-2 font-medium">{t("consoleBadges.course")}</th>
+              <th className="px-4 py-2 font-medium">{t("consoleBadges.wave")}</th>
               <th className="px-4 py-2 font-medium">{t("consoleBadges.isActive")}</th>
               <th className="px-4 py-2 font-medium">{t("consoleBadges.awardedCount")}</th>
               <th></th>
@@ -179,6 +200,7 @@ export function ConsoleBadgesPage() {
                 </td>
                 <td className="px-4 py-2 font-medium text-slate-800 dark:text-slate-100">{b.name}</td>
                 <td className="px-4 py-2 text-slate-600 dark:text-slate-300">{b.course_title ?? t("consoleBadges.anyCourse")}</td>
+                <td className="px-4 py-2 text-slate-600 dark:text-slate-300">{b.wave_name ?? t("consoleBadges.anyWave")}</td>
                 <td className="px-4 py-2">
                   <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${b.is_active ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" : "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300"}`}>
                     {b.is_active ? t("consoleBadges.isActive") : "—"}

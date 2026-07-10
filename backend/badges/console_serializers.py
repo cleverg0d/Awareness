@@ -5,6 +5,7 @@ from .models import Badge, BadgeSettings
 
 class BadgeAdminSerializer(serializers.ModelSerializer):
     course_title = serializers.CharField(source="course.title", read_only=True, default=None)
+    wave_name = serializers.CharField(source="wave.name", read_only=True, default=None)
     awarded_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -16,6 +17,8 @@ class BadgeAdminSerializer(serializers.ModelSerializer):
             "icon",
             "course",
             "course_title",
+            "wave",
+            "wave_name",
             "is_active",
             "awarded_count",
             "created_at",

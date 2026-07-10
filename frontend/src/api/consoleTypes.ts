@@ -66,6 +66,8 @@ export interface ConsoleBadge {
   icon: string;
   course: number | null;
   course_title: string | null;
+  wave: number | null;
+  wave_name: string | null;
   is_active: boolean;
   awarded_count: number;
   created_at: string;
