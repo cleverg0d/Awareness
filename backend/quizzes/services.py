@@ -122,26 +122,49 @@ def answer_question(user, attempt_id, question_id, selected_choices):
     return {"is_correct": answer.is_correct, "explanation": question.explanation}
 
 
-def submit_attempt(user, attempt_id):
-    """Фиксирует попытку по уже сохраненным через answer_question ответам. Неотвеченные вопросы засчитываются как неверные."""
-    attempt = get_owned_attempt(user, attempt_id)
-    if attempt.is_submitted:
-        raise QuizError("Попытка уже отправлена")
-
+def _fill_unanswered_as_wrong(attempt):
     answered_ids = set(attempt.answers.values_list("question_id", flat=True))
     for qid in attempt.question_set:
         if qid not in answered_ids:
             AttemptAnswer.objects.create(attempt=attempt, question_id=qid, selected_choices=[], is_correct=False)
 
-    attempt.submit()
 
+def _attempt_result(attempt):
     wrong = AttemptAnswer.objects.filter(attempt=attempt, is_correct=False).select_related("question", "question__chapter")
     wrong_chapters = sorted({a.question.chapter.title for a in wrong if a.question.chapter_id})
-
     return {
         "score_percent": attempt.score_percent,
         "passed": attempt.passed,
         "pass_threshold": attempt.pass_threshold_snapshot,
         "wrong_count": wrong.count(),
         "review_chapters": wrong_chapters,
+        "forfeited_reason": attempt.forfeited_reason or None,
     }
+
+
+def submit_attempt(user, attempt_id):
+    """Фиксирует попытку по уже сохраненным через answer_question ответам. Неотвеченные вопросы засчитываются как неверные."""
+    attempt = get_owned_attempt(user, attempt_id)
+    if attempt.is_submitted:
+        raise QuizError("Попытка уже отправлена")
+
+    _fill_unanswered_as_wrong(attempt)
+    attempt.finalize()
+
+    return _attempt_result(attempt)
+
+
+def forfeit_attempt(user, attempt_id, reason="focus_loss"):
+    """Принудительно проваливает попытку не из-за ответов, а из-за нарушения фокуса. Идемпотентно:
+    если попытка уже отправлена (честно через submit или уже форфейтнута раньше) - просто
+    возвращает текущее состояние, не поднимает ошибку. Событие blur/visibilitychange фронтенд не
+    полностью контролирует по таймингу относительно клика "Завершить", поэтому в отличие от
+    submit_attempt здесь гонка - ожидаемый, а не аварийный случай."""
+    attempt = get_owned_attempt(user, attempt_id)
+    if attempt.is_submitted:
+        return _attempt_result(attempt)
+
+    _fill_unanswered_as_wrong(attempt)
+    attempt.finalize(forfeited_reason=reason)
+
+    return _attempt_result(attempt)

@@ -4,6 +4,8 @@ from django.utils import timezone
 from courses.models import Choice, Question
 from waves.models import WaveAssignment
 
+FORFEIT_REASON_CHOICES = [("focus_loss", "Потеря фокуса на странице теста")]
+
 
 class QuizAttempt(models.Model):
     """
@@ -23,6 +25,13 @@ class QuizAttempt(models.Model):
     submitted_at = models.DateTimeField("Отправлена", null=True, blank=True)
     score_percent = models.FloatField("Результат, %", null=True, blank=True)
     passed = models.BooleanField("Сдано", default=False)
+    forfeited_reason = models.CharField(
+        "Причина принудительного провала",
+        max_length=20,
+        choices=FORFEIT_REASON_CHOICES,
+        blank=True,
+        default="",
+    )
 
     class Meta:
         verbose_name = "Попытка теста"
@@ -37,7 +46,7 @@ class QuizAttempt(models.Model):
     def is_submitted(self):
         return self.submitted_at is not None
 
-    def submit(self):
+    def finalize(self, forfeited_reason=""):
         """Подсчитать балл, зафиксировать результат. Идемпотентно - повторный вызов ничего не делает."""
         if self.is_submitted:
             return
@@ -45,9 +54,13 @@ class QuizAttempt(models.Model):
         total = len(self.question_set)
         correct = sum(1 for a in answers if a.is_correct)
         self.score_percent = round((correct / total) * 100, 2) if total else 0.0
-        self.passed = self.score_percent >= self.pass_threshold_snapshot
+        # Честный балл сохраняется даже при форфейте - это аудиторский след ("87%, но покинул
+        # страницу") ценнее плоского 0%, а passed все равно форсится в False, так что итог для
+        # статуса волны не меняется.
+        self.passed = False if forfeited_reason else self.score_percent >= self.pass_threshold_snapshot
+        self.forfeited_reason = forfeited_reason
         self.submitted_at = timezone.now()
-        self.save(update_fields=["score_percent", "passed", "submitted_at"])
+        self.save(update_fields=["score_percent", "passed", "submitted_at", "forfeited_reason"])
 
 
 class AttemptAnswer(models.Model):

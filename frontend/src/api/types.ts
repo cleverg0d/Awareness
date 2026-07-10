@@ -75,4 +75,5 @@ export interface SubmitAttemptResponse {
   pass_threshold: number;
   wrong_count: number;
   review_chapters: string[];
+  forfeited_reason: "focus_loss" | null;
 }
