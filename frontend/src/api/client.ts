@@ -27,7 +27,7 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
   }
 
   const headers = new Headers(options.headers);
-  if (options.body && !headers.has("Content-Type")) {
+  if (options.body && !(options.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
   const csrfToken = getCookie("csrftoken");
@@ -64,6 +64,8 @@ export const api = {
   put: <T>(path: string, body?: unknown) =>
     apiRequest<T>(path, { method: "PUT", body: body ? JSON.stringify(body) : undefined }),
   delete: <T>(path: string) => apiRequest<T>(path, { method: "DELETE" }),
+  postForm: <T>(path: string, body: FormData) => apiRequest<T>(path, { method: "POST", body }),
+  patchForm: <T>(path: string, body: FormData) => apiRequest<T>(path, { method: "PATCH", body }),
 };
 
 // Переиспользует загрузку файлов CKEditor5 (уже требует is_staff) вместо отдельного эндпоинта.

@@ -362,3 +362,12 @@ export function RepeatIcon({ className = base }: IconProps) {
     </svg>
   );
 }
+
+export function AwardIcon({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="12" cy="8" r="5" />
+      <path d="M8.5 12.5 7 21l5-2.5 5 2.5-1.5-8.5" />
+    </svg>
+  );
+}

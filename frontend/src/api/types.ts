@@ -77,3 +77,20 @@ export interface SubmitAttemptResponse {
   review_chapters: string[];
   forfeited_reason: "focus_loss" | null;
 }
+
+export interface EmployeeBadgeSummary {
+  id: number;
+  badge_name: string;
+  icon: string;
+  course_title: string | null;
+  token: string;
+  awarded_at: string;
+}
+
+export interface BadgeVerification {
+  badge_name: string;
+  icon: string;
+  course_title: string | null;
+  awarded_at: string;
+  employee_name: string | null;
+}

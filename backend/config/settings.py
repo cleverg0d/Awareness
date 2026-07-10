@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "quizzes",
     "integrations",
     "notifications",
+    "badges",
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,7 @@ REST_FRAMEWORK = {
         "login": "10/min",
         "integration": "60/hour",
         "integration_invalid_auth": "120/hour",
+        "badge_public": "120/min",
     },
 }
 

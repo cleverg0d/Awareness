@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "../context/LanguageContext";
-import { ChevronDownIcon, GlobeIcon, LogoutIcon, MoonIcon, SettingsIcon, SunIcon } from "./icons";
+import { AwardIcon, ChevronDownIcon, GlobeIcon, LogoutIcon, MoonIcon, SettingsIcon, SunIcon } from "./icons";
 
 interface MenuLink {
   to: string;
@@ -83,6 +83,10 @@ export function ProfileMenu({
                 </Link>
               ),
             )}
+            <Link to="/badges" onClick={() => setOpen(false)} className={itemClass}>
+              <AwardIcon className={iconClass} />
+              {t("badges.navLink")}
+            </Link>
             <Link to="/settings" onClick={() => setOpen(false)} className={itemClass}>
               <SettingsIcon className={iconClass} />
               {t("profile.settings")}

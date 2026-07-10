@@ -7,6 +7,7 @@ import { ProfileMenu } from "../components/ProfileMenu";
 import {
   AlertTriangleIcon,
   ArrowLeftIcon,
+  AwardIcon,
   BellIcon,
   BookIcon,
   ClockIcon,
@@ -36,6 +37,7 @@ export function ConsoleLayout() {
     { to: "/console/waves", label: t("console.nav.waves"), icon: <WaveIcon /> },
     { to: "/console/courses", label: t("console.nav.courses"), icon: <BookIcon /> },
     { to: "/console/problem-employees", label: t("console.nav.problemEmployees"), icon: <AlertTriangleIcon /> },
+    { to: "/console/badges", label: t("consoleBadges.title"), icon: <AwardIcon /> },
     // Сотрудники/Интеграции/Уведомления - только полному администратору (is_superuser), не
     // менеджеру обучения: там управление ролями, секреты каналов и доступ к чужим паролям.
     ...(user.is_superuser

@@ -151,7 +151,21 @@ def submit_attempt(user, attempt_id):
     _fill_unanswered_as_wrong(attempt)
     attempt.finalize()
 
+    if attempt.passed:
+        _maybe_award_badges(attempt.wave_assignment)
+
     return _attempt_result(attempt)
+
+
+def _maybe_award_badges(assignment):
+    """Начисление значков - лучшее усилие, не вызывается из forfeit_attempt (там passed всегда
+    False - см. QuizAttempt.finalize). Значок начисляется только за первую честную сдачу этого
+    назначения - повторная пересдача уже пройденного курса не должна пытаться начислить снова."""
+    if assignment.attempts.filter(passed=True).count() != 1:
+        return
+    from badges.services import award_matching_badges  # локальный импорт - тот же паттерн, что waves/services.py::_notify_assigned использует для notifications
+
+    award_matching_badges(assignment)
 
 
 def forfeit_attempt(user, attempt_id, reason="focus_loss"):
