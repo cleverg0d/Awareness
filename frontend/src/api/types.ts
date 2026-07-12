@@ -94,3 +94,28 @@ export interface BadgeVerification {
   awarded_at: string;
   employee_name: string | null;
 }
+
+export interface LeaderboardEntry {
+  rank: number;
+  full_name: string;
+  percent: number;
+  is_you: boolean;
+}
+
+export interface LeaderboardYou {
+  rank: number;
+  percent: number;
+  in_top: boolean;
+}
+
+export interface LeaderboardView {
+  total: number;
+  top: LeaderboardEntry[];
+  you: LeaderboardYou | null;
+}
+
+export interface LeaderboardResponse {
+  enabled: boolean;
+  company?: LeaderboardView;
+  department?: (LeaderboardView & { name: string }) | null;
+}

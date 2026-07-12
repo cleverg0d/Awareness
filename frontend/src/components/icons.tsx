@@ -371,3 +371,13 @@ export function AwardIcon({ className = base }: IconProps) {
     </svg>
   );
 }
+
+export function TrophyIcon({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
+      <path d="M7 5H4v1a4 4 0 0 0 4 4M17 5h3v1a4 4 0 0 1-4 4" />
+      <path d="M12 13v4M8 21h8M9 21v-2.5a3 3 0 0 1 6 0V21" />
+    </svg>
+  );
+}

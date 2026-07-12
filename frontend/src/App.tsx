@@ -8,6 +8,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { CoursePage } from "./pages/CoursePage";
 import { BadgesPage } from "./pages/BadgesPage";
 import { BadgeVerificationPage } from "./pages/BadgeVerificationPage";
+import { LeaderboardPage } from "./pages/LeaderboardPage";
 import { ConsoleLayout } from "./console/ConsoleLayout";
 import { ConsoleDashboardPage } from "./console/pages/ConsoleDashboardPage";
 import { ConsoleWavesPage } from "./console/pages/ConsoleWavesPage";
@@ -21,6 +22,7 @@ import { ConsoleNotificationsPage } from "./console/pages/ConsoleNotificationsPa
 import { ConsoleSecurityPage } from "./console/pages/ConsoleSecurityPage";
 import { ConsoleLogsPage } from "./console/pages/ConsoleLogsPage";
 import { ConsoleBadgesPage } from "./console/pages/ConsoleBadgesPage";
+import { ConsoleLeaderboardPage } from "./console/pages/ConsoleLeaderboardPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -78,6 +80,14 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <LeaderboardPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/console" element={<ConsoleLayout />}>
         <Route index element={<ConsoleDashboardPage />} />
         <Route path="waves" element={<ConsoleWavesPage />} />
@@ -116,6 +126,14 @@ function App() {
           element={
             <SuperAdminRoute>
               <ConsoleSecurityPage />
+            </SuperAdminRoute>
+          }
+        />
+        <Route
+          path="leaderboard"
+          element={
+            <SuperAdminRoute>
+              <ConsoleLeaderboardPage />
             </SuperAdminRoute>
           }
         />

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "integrations",
     "notifications",
     "badges",
+    "leaderboard",
 ]
 
 MIDDLEWARE = [

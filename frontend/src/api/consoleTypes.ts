@@ -77,6 +77,10 @@ export interface ConsoleBadgeSettings {
   show_real_name: boolean;
 }
 
+export interface ConsoleLeaderboardSettings {
+  enabled: boolean;
+}
+
 export interface ConsoleWaveAssignment {
   id: number;
   wave: number;

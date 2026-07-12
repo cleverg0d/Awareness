@@ -21,6 +21,7 @@ urlpatterns = [
     path("api/", include("quizzes.urls")),
     path("api/", include("badges.urls")),
     path("api/badges/", include("badges.public_urls")),
+    path("api/", include("leaderboard.urls")),
     path("api/console/", include("courses.console_urls")),
     path("api/console/", include("waves.console_urls")),
     path("api/console/", include("accounts.console_urls")),
@@ -28,6 +29,7 @@ urlpatterns = [
     path("api/integrations/v1/", include("integrations.urls")),
     path("api/console/", include("notifications.console_urls")),
     path("api/console/", include("badges.console_urls")),
+    path("api/console/", include("leaderboard.console_urls")),
 ]
 
 if settings.DEBUG:
