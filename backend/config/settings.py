@@ -122,6 +122,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CKEditor 5 - без внешних CDN, загрузка файлов только для is_staff (дефолт пакета).
+# Без этого лимита пакет разрешает файлы любого размера (max_size=0 по умолчанию).
+CKEDITOR_5_MAX_FILE_SIZE = 5  # МБ
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [

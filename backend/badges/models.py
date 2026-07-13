@@ -5,6 +5,8 @@ from django.db import models
 
 from notifications.models import SingletonSettings
 
+from .validators import validate_icon_extension, validate_icon_size
+
 
 class Badge(models.Model):
     """Тип награды, который админ определяет один раз. Условие получения по приоритету:
@@ -15,7 +17,11 @@ class Badge(models.Model):
 
     name = models.CharField("Название", max_length=255)
     description = models.TextField("Описание", blank=True)
-    icon = models.ImageField("Иконка", upload_to="badges/icons/")
+    icon = models.ImageField(
+        "Иконка",
+        upload_to="badges/icons/",
+        validators=[validate_icon_extension, validate_icon_size],
+    )
     course = models.ForeignKey(
         "courses.Course",
         verbose_name="Курс",
