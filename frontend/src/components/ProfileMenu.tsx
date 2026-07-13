@@ -15,9 +15,13 @@ interface MenuLink {
 export function ProfileMenu({
   extraLinks = [],
   triggerClassName,
+  compact = false,
 }: {
   extraLinks?: MenuLink[];
   triggerClassName?: string;
+  /** Скрывает имя и шеврон ниже lg, оставляя только аватар - для узкой иконки-полоски сайдбара
+   * консоли на мобильном. Не влияет на использование в обычном хедере портала. */
+  compact?: boolean;
 }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -49,6 +53,7 @@ export function ProfileMenu({
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
+        title={compact ? user.full_name : undefined}
         className={
           triggerClassName ??
           "flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -57,8 +62,10 @@ export function ProfileMenu({
         <span className="w-7 h-7 shrink-0 rounded-full bg-blue-600 text-white text-sm font-medium flex items-center justify-center">
           {initial}
         </span>
-        <span className="text-sm max-w-40 truncate">{user.full_name}</span>
-        <ChevronDownIcon className={`w-4 h-4 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className={`text-sm max-w-40 truncate ${compact ? "hidden lg:inline" : ""}`}>{user.full_name}</span>
+        <ChevronDownIcon
+          className={`w-4 h-4 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""} ${compact ? "hidden lg:block" : ""}`}
+        />
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 z-20 text-sm">
