@@ -77,14 +77,17 @@ export function ConsoleCoursesPage() {
       <div className="space-y-3">
         {courses?.map((c) => (
           <div key={c.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between">
-            <div>
-              <Link to={`/console/courses/${c.id}`} className="font-medium text-slate-800 dark:text-slate-100 hover:text-blue-600">
-                {c.title}
-              </Link>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                {pluralize(c.chapter_count, language, "chapters")} · {pluralize(c.question_count, language, "questions")} ·{" "}
-                {pluralize(c.wave_count, language, "waves")}
-              </p>
+            <div className="flex items-center gap-3 min-w-0">
+              {c.icon && <img src={c.icon} alt="" className="w-9 h-9 rounded-lg object-contain shrink-0" />}
+              <div className="min-w-0">
+                <Link to={`/console/courses/${c.id}`} className="font-medium text-slate-800 dark:text-slate-100 hover:text-blue-600">
+                  {c.title}
+                </Link>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {pluralize(c.chapter_count, language, "chapters")} · {pluralize(c.question_count, language, "questions")} ·{" "}
+                  {pluralize(c.wave_count, language, "waves")}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <input

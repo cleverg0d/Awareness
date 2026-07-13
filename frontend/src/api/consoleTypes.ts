@@ -2,6 +2,7 @@ export interface ConsoleCourse {
   id: number;
   title: string;
   description: string;
+  icon: string | null;
   is_active: boolean;
   chapter_count: number;
   question_count: number;

@@ -226,7 +226,12 @@ export function DashboardPage() {
                         </div>
 
                         <div className="flex items-start justify-between gap-3">
-                          <h2 className="font-medium text-slate-800 dark:text-slate-100 min-w-0">{wave.course_title}</h2>
+                          <div className="flex items-center gap-3 min-w-0">
+                            {wave.course_icon && (
+                              <img src={wave.course_icon} alt="" className="w-10 h-10 rounded-lg object-contain shrink-0" />
+                            )}
+                            <h2 className="font-medium text-slate-800 dark:text-slate-100 min-w-0 truncate">{wave.course_title}</h2>
+                          </div>
                           <StatusBadge status={wave.status} overdue={wave.is_overdue} />
                         </div>
 

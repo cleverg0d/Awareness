@@ -8,6 +8,7 @@ class WaveAssignmentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="wave.name")
     course_id = serializers.IntegerField(source="wave.course_id")
     course_title = serializers.CharField(source="wave.course.title")
+    course_icon = serializers.ImageField(source="wave.course.icon", read_only=True, allow_null=True)
     deadline = serializers.DateField(source="wave.deadline")
     pass_threshold = serializers.IntegerField(source="wave.pass_threshold")
     max_attempts = serializers.IntegerField(source="wave.max_attempts")
@@ -25,6 +26,7 @@ class WaveAssignmentSerializer(serializers.ModelSerializer):
             "name",
             "course_id",
             "course_title",
+            "course_icon",
             "deadline",
             "pass_threshold",
             "max_attempts",

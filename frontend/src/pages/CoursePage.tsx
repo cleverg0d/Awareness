@@ -231,7 +231,10 @@ export function CoursePage() {
         <Link to="/" className="text-sm text-blue-600 hover:underline">
           {t("course.backToCoursesLink")}
         </Link>
-        <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mt-1 mb-1">{course.title}</h1>
+        <div className="flex items-center gap-3 mt-1 mb-1">
+          {course.icon && <img src={course.icon} alt="" className="w-10 h-10 rounded-lg object-contain shrink-0" />}
+          <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{course.title}</h1>
+        </div>
 
         {alreadyPassed ? (
           <>

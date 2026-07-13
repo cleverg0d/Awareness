@@ -17,6 +17,7 @@ export interface WaveAssignmentSummary {
   name: string;
   course_id: number;
   course_title: string;
+  course_icon: string | null;
   deadline: string;
   pass_threshold: number;
   max_attempts: number | null;
@@ -38,6 +39,7 @@ export interface CourseDetail {
   id: number;
   title: string;
   description: string;
+  icon: string | null;
   chapters: Chapter[];
 }
 
