@@ -16,12 +16,16 @@ export function ProfileMenu({
   extraLinks = [],
   triggerClassName,
   compact = false,
+  forceHideName = false,
 }: {
   extraLinks?: MenuLink[];
   triggerClassName?: string;
   /** Скрывает имя и шеврон ниже lg, оставляя только аватар - для узкой иконки-полоски сайдбара
    * консоли на мобильном. Не влияет на использование в обычном хедере портала. */
   compact?: boolean;
+  /** Скрывает имя и шеврон на всех размерах экрана, а не только ниже lg - для ручного
+   * сворачивания сайдбара консоли на lg+. Требует compact=true. */
+  forceHideName?: boolean;
 }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -62,9 +66,11 @@ export function ProfileMenu({
         <span className="w-7 h-7 shrink-0 rounded-full bg-blue-600 text-white text-sm font-medium flex items-center justify-center">
           {initial}
         </span>
-        <span className={`text-sm max-w-40 truncate ${compact ? "hidden lg:inline" : ""}`}>{user.full_name}</span>
+        <span className={`text-sm max-w-40 truncate ${forceHideName ? "hidden" : compact ? "hidden lg:inline" : ""}`}>{user.full_name}</span>
         <ChevronDownIcon
-          className={`w-4 h-4 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""} ${compact ? "hidden lg:block" : ""}`}
+          className={`w-4 h-4 shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""} ${
+            forceHideName ? "hidden" : compact ? "hidden lg:block" : ""
+          }`}
         />
       </button>
       {open && (

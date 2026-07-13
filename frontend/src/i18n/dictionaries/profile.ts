@@ -17,8 +17,8 @@ export const profileRu = {
   console: {
     title: "Консоль ИБ-обучения",
     backToPortal: "К пользовательскому порталу",
-    openMenu: "Открыть меню",
-    closeMenu: "Закрыть меню",
+    collapseMenu: "Свернуть меню",
+    expandMenu: "Развернуть меню",
     nav: {
       dashboard: "Дашборд",
       training: "Обучение",
@@ -53,8 +53,8 @@ export const profileEn = {
   console: {
     title: "Training console",
     backToPortal: "Back to portal",
-    openMenu: "Open menu",
-    closeMenu: "Close menu",
+    collapseMenu: "Collapse menu",
+    expandMenu: "Expand menu",
     nav: {
       dashboard: "Dashboard",
       training: "Training",
