@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api, ApiError } from "../../api/client";
 import type { ConsoleCourse, ConsoleWave } from "../../api/consoleTypes";
 import { WaveStatusBadge } from "../components/WaveStatusBadge";
+import { TrainingTabs } from "../components/TrainingTabs";
 import { formatDate } from "../../utils/date";
 import { isRedundant } from "../../utils/text";
 import { useTranslation } from "../../context/LanguageContext";
@@ -52,6 +53,7 @@ export function ConsoleWavesPage() {
 
   return (
     <div>
+      <TrainingTabs />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{t("consoleWaves.title")}</h1>
         <button

@@ -19,6 +19,7 @@ export const profileRu = {
     backToPortal: "К пользовательскому порталу",
     nav: {
       dashboard: "Дашборд",
+      training: "Обучение",
       waves: "Волны обучения",
       courses: "Курсы",
       problemEmployees: "Проблемные сотрудники",
@@ -52,6 +53,7 @@ export const profileEn = {
     backToPortal: "Back to portal",
     nav: {
       dashboard: "Dashboard",
+      training: "Training",
       waves: "Training waves",
       courses: "Courses",
       problemEmployees: "At-risk employees",

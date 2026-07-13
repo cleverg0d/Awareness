@@ -4,6 +4,7 @@ import { api } from "../../api/client";
 import type { ConsoleCourse } from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
 import { pluralize } from "../../i18n/plural";
+import { TrainingTabs } from "../components/TrainingTabs";
 
 export function ConsoleCoursesPage() {
   const { t, language } = useTranslation();
@@ -31,6 +32,7 @@ export function ConsoleCoursesPage() {
 
   return (
     <div>
+      <TrainingTabs />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{t("consoleCourses.title")}</h1>
         <button

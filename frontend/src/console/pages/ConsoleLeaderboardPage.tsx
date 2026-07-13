@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../api/client";
 import type { ConsoleLeaderboardSettings } from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
+import { TrainingTabs } from "../components/TrainingTabs";
 
 export function ConsoleLeaderboardPage() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export function ConsoleLeaderboardPage() {
 
   return (
     <div>
+      <TrainingTabs />
       <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{t("consoleLeaderboard.title")}</h1>
       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-6">{t("consoleLeaderboard.subtitle")}</p>
 

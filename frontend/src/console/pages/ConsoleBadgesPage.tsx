@@ -3,6 +3,7 @@ import { api, ApiError } from "../../api/client";
 import type { ConsoleBadge, ConsoleBadgeSettings, ConsoleCourse, ConsoleWave } from "../../api/consoleTypes";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "../../context/LanguageContext";
+import { TrainingTabs } from "../components/TrainingTabs";
 
 const emptyForm = { name: "", description: "", course: "", wave: "", is_active: true };
 
@@ -82,6 +83,7 @@ export function ConsoleBadgesPage() {
 
   return (
     <div>
+      <TrainingTabs />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{t("consoleBadges.title")}</h1>

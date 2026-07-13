@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Navigate, Outlet } from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
@@ -7,7 +7,6 @@ import { ProfileMenu } from "../components/ProfileMenu";
 import {
   AlertTriangleIcon,
   ArrowLeftIcon,
-  AwardIcon,
   BellIcon,
   BookIcon,
   ClockIcon,
@@ -15,14 +14,17 @@ import {
   ExternalLinkIcon,
   LinkIcon,
   ShieldIcon,
-  TrophyIcon,
   UsersIcon,
-  WaveIcon,
 } from "../components/icons";
+
+// Волны/Курсы/Награды/Рейтинг - все про одну и ту же работу над курсами, объединены под одним
+// пунктом меню "Обучение" с вкладками внутри (см. TrainingTabs), а не 4 разных пункта в сайдбаре.
+const TRAINING_PREFIXES = ["/console/waves", "/console/courses", "/console/badges", "/console/leaderboard"];
 
 export function ConsoleLayout() {
   const { user, loading } = useAuth();
   const { t } = useTranslation();
+  const location = useLocation();
   const [version, setVersion] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,12 +35,12 @@ export function ConsoleLayout() {
   if (!user) return <Navigate to="/login" replace />;
   if (!user.is_staff) return <Navigate to="/" replace />;
 
+  const trainingActive = TRAINING_PREFIXES.some((p) => location.pathname.startsWith(p));
+
   const navItems = [
     { to: "/console", label: t("console.nav.dashboard"), end: true, icon: <DashboardIcon /> },
-    { to: "/console/waves", label: t("console.nav.waves"), icon: <WaveIcon /> },
-    { to: "/console/courses", label: t("console.nav.courses"), icon: <BookIcon /> },
+    { to: "/console/waves", label: t("console.nav.training"), icon: <BookIcon />, forceActive: trainingActive },
     { to: "/console/problem-employees", label: t("console.nav.problemEmployees"), icon: <AlertTriangleIcon /> },
-    { to: "/console/badges", label: t("consoleBadges.title"), icon: <AwardIcon /> },
     // Сотрудники/Интеграции/Уведомления - только полному администратору (is_superuser), не
     // менеджеру обучения: там управление ролями, секреты каналов и доступ к чужим паролям.
     ...(user.is_superuser
@@ -47,7 +49,6 @@ export function ConsoleLayout() {
           { to: "/console/integrations", label: t("console.nav.integrations"), icon: <LinkIcon /> },
           { to: "/console/notifications", label: t("console.nav.notifications"), icon: <BellIcon /> },
           { to: "/console/security", label: t("console.nav.security"), icon: <ShieldIcon /> },
-          { to: "/console/leaderboard", label: t("consoleLeaderboard.title"), icon: <TrophyIcon /> },
           { to: "/console/logs", label: t("console.nav.logs"), icon: <ClockIcon /> },
         ]
       : []),
@@ -71,9 +72,11 @@ export function ConsoleLayout() {
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) =>
+              className={() =>
                 `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm ${
-                  isActive ? "bg-blue-600 text-white" : "text-slate-300 hover:bg-slate-800"
+                  item.forceActive ?? location.pathname === item.to
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800"
                 }`
               }
             >
