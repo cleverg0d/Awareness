@@ -17,6 +17,7 @@ export function ConsoleBadgesPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [icon, setIcon] = useState<File | null>(null);
+  const [existingIconUrl, setExistingIconUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function reload() {
@@ -33,6 +34,7 @@ export function ConsoleBadgesPage() {
     setEditingId(null);
     setForm(emptyForm);
     setIcon(null);
+    setExistingIconUrl(null);
     setError(null);
     setShowForm(true);
   }
@@ -47,8 +49,18 @@ export function ConsoleBadgesPage() {
       is_active: badge.is_active,
     });
     setIcon(null);
+    setExistingIconUrl(badge.icon);
     setError(null);
     setShowForm(true);
+  }
+
+  async function handleUseCourseIcon() {
+    const course = courses?.find((c) => String(c.id) === form.course);
+    if (!course?.icon) return;
+    const res = await fetch(course.icon);
+    const blob = await res.blob();
+    const filename = course.icon.split("/").pop() || "icon.png";
+    setIcon(new File([blob], filename, { type: blob.type }));
   }
 
   async function handleSave() {
@@ -74,12 +86,15 @@ export function ConsoleBadgesPage() {
       setShowForm(false);
       setForm(emptyForm);
       setIcon(null);
+      setExistingIconUrl(null);
       setEditingId(null);
       reload();
     } catch (err) {
       setError(err instanceof ApiError ? JSON.stringify(err.detail) : t("consoleBadges.saveFailed"));
     }
   }
+
+  const selectedCourseIcon = courses?.find((c) => String(c.id) === form.course)?.icon ?? null;
 
   return (
     <div>
@@ -152,12 +167,30 @@ export function ConsoleBadgesPage() {
             </label>
             <label className="text-sm text-slate-600 dark:text-slate-200">
               {t("consoleBadges.icon")}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setIcon(e.target.files?.[0] ?? null)}
-                className="mt-1 w-full text-sm text-slate-600 dark:text-slate-300"
-              />
+              <div className="mt-1 flex items-center gap-3">
+                {(icon || existingIconUrl) && (
+                  <img
+                    src={icon ? URL.createObjectURL(icon) : existingIconUrl!}
+                    alt=""
+                    className="w-10 h-10 rounded-lg object-contain bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shrink-0"
+                  />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setIcon(e.target.files?.[0] ?? null)}
+                  className="w-full text-sm text-slate-600 dark:text-slate-300"
+                />
+              </div>
+              {selectedCourseIcon && (
+                <button
+                  type="button"
+                  onClick={handleUseCourseIcon}
+                  className="mt-1.5 text-xs text-blue-600 hover:underline"
+                >
+                  {t("consoleBadges.useCourseIcon")}
+                </button>
+              )}
             </label>
             <label className="text-sm text-slate-600 dark:text-slate-200 flex items-center gap-2 mt-6">
               <input
