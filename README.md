@@ -76,6 +76,12 @@ fail with a clear error instead of silently breaking. Generate it with:
 python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 ```
 
+If you're deploying anywhere other than `localhost` (a real server IP or domain), also update
+`DJANGO_ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, and `CSRF_TRUSTED_ORIGINS` in `.env` to match the
+host/origin you'll actually access the portal from - they default to `localhost`/`127.0.0.1` only.
+Skipping this makes the frontend load fine (it's served as static files by nginx) but every API
+call, starting with login, fails with Django's generic "Bad Request (400)" page.
+
 Then:
 
 ```bash
