@@ -33,7 +33,7 @@ export function ConsoleLeaderboardPage() {
       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-6">{t("consoleLeaderboard.subtitle")}</p>
 
       {settings && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 max-w-xl">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
             <input type="checkbox" checked={settings.enabled} onChange={toggle} />
             {t("consoleLeaderboard.enabled")}

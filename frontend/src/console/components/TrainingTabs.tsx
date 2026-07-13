@@ -14,13 +14,13 @@ export function TrainingTabs() {
   ];
 
   return (
-    <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-6">
+    <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-6 overflow-x-auto">
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
           className={({ isActive }) =>
-            `px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+            `shrink-0 px-4 py-2 text-sm font-medium border-b-2 -mb-px whitespace-nowrap ${
               isActive
                 ? "border-blue-600 text-blue-600 dark:text-blue-400"
                 : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"

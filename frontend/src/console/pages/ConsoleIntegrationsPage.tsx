@@ -102,7 +102,7 @@ function LdapSection() {
             <input type="checkbox" checked={form.enabled} onChange={(e) => update("enabled", e.target.checked)} className="h-4 w-4" />
             {t("consoleLdap.enableLogin")}
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="text-sm text-slate-600 dark:text-slate-300 col-span-2">
               {t("consoleLdap.fieldServerUri")}
               <input value={form.server_uri} onChange={(e) => update("server_uri", e.target.value)} placeholder="ldaps://dc1.company.local" className={inputClass} />
@@ -300,6 +300,7 @@ function ApiTokensSection() {
           {tokens?.length === 0 ? (
             <p className="text-sm text-slate-400 dark:text-slate-500 px-5 pb-4">{t("consoleIntegrations.noTokens")}</p>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <tbody>
                 {tokens?.map((token) => (
@@ -327,6 +328,7 @@ function ApiTokensSection() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

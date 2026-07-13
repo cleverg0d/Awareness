@@ -280,6 +280,18 @@ export function CoursePage() {
             </aside>
 
             <div className="flex-1 min-w-0">
+              <select
+                value={currentIndex}
+                onChange={(e) => goToChapter(Number(e.target.value))}
+                className="md:hidden w-full mb-4 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:text-slate-100"
+              >
+                {chapters.map((ch, i) => (
+                  <option key={ch.id} value={i} disabled={i > maxUnlocked}>
+                    {t("course.chapterLabel", { number: i + 1 })} - {ch.title}
+                    {isChapterComplete(ch) ? " ✓" : ""}
+                  </option>
+                ))}
+              </select>
               {showFocusWarning && (
                 <div className="mb-6 bg-amber-50 dark:bg-amber-950 border border-amber-300 dark:border-amber-800 rounded-xl p-4 flex items-center justify-between gap-4">
                   <p className="text-sm text-amber-900 dark:text-amber-300">{t("course.focusWarning")}</p>

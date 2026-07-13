@@ -66,7 +66,7 @@ function EmailSection() {
             <input type="checkbox" checked={form.enabled} onChange={(e) => setForm({ ...form, enabled: e.target.checked })} className="h-4 w-4" />
             {t("consoleNotifications.enable")}
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="text-sm text-slate-600 dark:text-slate-300 col-span-2">
               {t("consoleNotifications.smtpHost")}
               <input value={form.smtp_host} onChange={(e) => setForm({ ...form, smtp_host: e.target.value })} placeholder="smtp.yandex.ru" className={inputClass} />

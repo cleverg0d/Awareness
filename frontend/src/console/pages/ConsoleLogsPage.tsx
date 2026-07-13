@@ -121,12 +121,12 @@ export function ConsoleLogsPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("consoleLogs.subtitle")}</p>
       </div>
 
-      <div className="inline-flex bg-slate-200/70 dark:bg-slate-800 rounded-lg p-1">
+      <div className="flex bg-slate-200/70 dark:bg-slate-800 rounded-lg p-1 overflow-x-auto">
         {tabs.map((item) => (
           <button
             key={item.key}
             onClick={() => setTab(item.key)}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium transition ${
+            className={`shrink-0 flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition ${
               tab === item.key ? "bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm" : "text-slate-500 dark:text-slate-400"
             }`}
           >
@@ -137,9 +137,11 @@ export function ConsoleLogsPage() {
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-        {tab === "logins" && <LoginsTable />}
-        {tab === "integrations" && <IntegrationsTable />}
-        {tab === "notifications" && <NotificationsTable />}
+        <div className="overflow-x-auto">
+          {tab === "logins" && <LoginsTable />}
+          {tab === "integrations" && <IntegrationsTable />}
+          {tab === "notifications" && <NotificationsTable />}
+        </div>
       </div>
     </div>
   );

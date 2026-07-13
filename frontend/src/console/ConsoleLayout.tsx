@@ -13,8 +13,10 @@ import {
   DashboardIcon,
   ExternalLinkIcon,
   LinkIcon,
+  MenuIcon,
   ShieldIcon,
   UsersIcon,
+  XIcon,
 } from "../components/icons";
 
 // Волны/Курсы/Награды/Рейтинг - все про одну и ту же работу над курсами, объединены под одним
@@ -26,10 +28,16 @@ export function ConsoleLayout() {
   const { t } = useTranslation();
   const location = useLocation();
   const [version, setVersion] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     api.get<{ version: string }>("/api/health/").then((res) => setVersion(res.version));
   }, []);
+
+  // Закрываем off-canvas сайдбар при переходе на другую страницу консоли (мобильная верстка).
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-500">{t("common.loading")}</div>;
   if (!user) return <Navigate to="/login" replace />;
@@ -55,12 +63,40 @@ export function ConsoleLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex">
-      <aside className="w-64 shrink-0 sticky top-0 h-screen overflow-y-auto bg-slate-900 dark:bg-slate-950 text-slate-200 flex flex-col">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 lg:flex">
+      {/* Мобильный верхний бар - на десктопе (lg+) скрыт, сайдбар там всегда виден статично */}
+      <div className="lg:hidden sticky top-0 z-30 h-14 bg-slate-900 dark:bg-slate-950 text-slate-200 flex items-center gap-3 px-4 border-b border-slate-800">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-800"
+          aria-label={t("console.openMenu")}
+        >
+          <MenuIcon />
+        </button>
+        <img src="/brand/icon-dark.png" alt="" className="w-6 h-6 shrink-0" />
+        <span className="font-semibold text-white truncate">{t("console.title")}</span>
+      </div>
+
+      {sidebarOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      <aside
+        className={`w-72 lg:w-64 shrink-0 fixed lg:sticky top-0 h-screen overflow-y-auto bg-slate-900 dark:bg-slate-950 text-slate-200 flex flex-col z-50 transition-transform duration-200 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
         <div className="border-b border-slate-800">
           <div className="px-5 pt-4 pb-2 flex items-center gap-2 min-w-0">
             <img src="/brand/icon-dark.png" alt="" className="w-7 h-7 shrink-0" />
-            <span className="font-semibold text-white truncate">{t("console.title")}</span>
+            <span className="font-semibold text-white truncate flex-1">{t("console.title")}</span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden p-1 rounded-lg hover:bg-slate-800 shrink-0"
+              aria-label={t("console.closeMenu")}
+            >
+              <XIcon />
+            </button>
           </div>
           <div className="px-3 pb-3">
             <ProfileMenu triggerClassName="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg hover:bg-slate-800" />
@@ -104,7 +140,7 @@ export function ConsoleLayout() {
           {version && <p className="px-3 pt-1 text-xs text-slate-500">Awareness v{version}</p>}
         </div>
       </aside>
-      <main className="flex-1 min-w-0 p-6">
+      <main className="flex-1 min-w-0 p-4 sm:p-6">
         <Outlet />
       </main>
     </div>
