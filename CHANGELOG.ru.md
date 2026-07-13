@@ -18,6 +18,13 @@
 
 Пока нет незапланированных изменений.
 
+## [1.2.5] - 2026-07-13
+
+✓ В README и `.env.example` нигде явно не говорилось, что `DJANGO_ALLOWED_HOSTS`,
+`CORS_ALLOWED_ORIGINS` и `CSRF_TRUSTED_ORIGINS` нужно менять при развертывании не на `localhost` -
+при установке через Docker на реальном сервере фронтенд открывался нормально, а любой запрос к
+API, начиная со входа, падал с родовой Django-страницей "Bad Request (400)".
+
 ## [1.2.4] - 2026-07-08
 
 ✓ `manage.py createsuperuser` падал с `TypeError: ... missing 1 required positional argument:

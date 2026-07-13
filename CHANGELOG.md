@@ -17,6 +17,13 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.2.5] - 2026-07-13
+
+✓ README and `.env.example` didn't say that `DJANGO_ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, and
+`CSRF_TRUSTED_ORIGINS` need to be changed when deploying anywhere other than `localhost` - a
+Docker install on a real server would load the frontend fine but fail every API call, starting
+with login, with Django's generic "Bad Request (400)" page.
+
 ## [1.2.4] - 2026-07-08
 
 ✓ `manage.py createsuperuser` crashed with `TypeError: ... missing 1 required positional
