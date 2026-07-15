@@ -38,7 +38,7 @@ export function AccordionShell({ icon, title, enabled, loading, children }: Acco
       </button>
       {open && !loading && (
         <div className="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-700">
-          <div className="max-w-2xl space-y-4">{children}</div>
+          <div className="max-w-3xl space-y-4">{children}</div>
         </div>
       )}
     </div>
