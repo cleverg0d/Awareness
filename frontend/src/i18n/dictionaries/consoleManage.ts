@@ -95,7 +95,7 @@ export const consoleManageRu = {
   },
   consoleSecurityPage: {
     title: "Безопасность",
-    subtitle: "Настройки, влияющие на защищенность портала. Пока здесь только защита входа - раздел будет пополняться.",
+    subtitle: "Настройки, влияющие на защищенность портала.",
   },
   consoleLdap: {
     title: "LDAP / Active Directory",
@@ -136,6 +136,13 @@ export const consoleManageRu = {
     resultSuccess: "Успешно",
     resultFailed: "Неудачно",
     noIp: "-",
+  },
+  consoleQuizSecurity: {
+    title: "Контроль фокуса на тесте",
+    subtitle: "Автоматический провал попытки при уходе со страницы теста во время его прохождения.",
+    toggle: "Отслеживать переключение на другое окно/вкладку во время теста",
+    hint: "При выключении сотрудники могут свободно переключаться между окнами во время теста без последствий для попытки.",
+    saveFailed: "Не удалось сохранить настройку",
   },
   consoleLogs: {
     title: "Журналы",
@@ -300,7 +307,7 @@ export const consoleManageEn = {
   },
   consoleSecurityPage: {
     title: "Security",
-    subtitle: "Settings that affect how secure the portal is. Only login protection lives here for now - this section will grow.",
+    subtitle: "Settings that affect how secure the portal is.",
   },
   consoleLdap: {
     title: "LDAP / Active Directory",
@@ -341,6 +348,13 @@ export const consoleManageEn = {
     resultSuccess: "Success",
     resultFailed: "Failed",
     noIp: "-",
+  },
+  consoleQuizSecurity: {
+    title: "Focus control during a quiz",
+    subtitle: "Automatically fail an attempt when the employee leaves the quiz page while taking it.",
+    toggle: "Track switching to another window/tab during a quiz",
+    hint: "When off, employees can freely switch windows during a quiz with no consequence for the attempt.",
+    saveFailed: "Failed to save the setting",
   },
   consoleLogs: {
     title: "Logs",

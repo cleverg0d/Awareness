@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import services
-from .models import QuizAttempt
+from .models import QuizAttempt, QuizSecuritySettings
 
 
 class StartAttemptView(APIView):
@@ -19,6 +19,7 @@ class StartAttemptView(APIView):
                 "started_at": attempt.started_at,
                 "submitted": attempt.is_submitted,
                 "questions": services.get_attempt_questions(attempt),
+                "focus_control_enabled": QuizSecuritySettings.get_solo().focus_control_enabled,
             }
         )
 
@@ -43,6 +44,7 @@ class AttemptDetailView(APIView):
                 "attempt_id": attempt.id,
                 "submitted": False,
                 "questions": services.get_attempt_questions(attempt),
+                "focus_control_enabled": QuizSecuritySettings.get_solo().focus_control_enabled,
             }
         )
 

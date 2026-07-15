@@ -17,6 +17,11 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.4.1] - 2026-07-15
+
+✓ Focus control during a quiz was hardcoded on with no way to disable it - now toggleable in the
+console ("Security → Focus control during a quiz").
+
 ## [1.4.0] - 2026-07-13
 
 ✚ Badges for completing courses - the admin sets an icon and an earning condition: a specific

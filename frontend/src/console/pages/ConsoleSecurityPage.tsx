@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../../api/client";
-import type { ConsoleSecuritySettings } from "../../api/consoleTypes";
+import type { ConsoleQuizSecuritySettings, ConsoleSecuritySettings } from "../../api/consoleTypes";
 import { useTranslation } from "../../context/LanguageContext";
-import { ShieldIcon } from "../../components/icons";
+import { EyeIcon, ShieldIcon } from "../../components/icons";
 import { AccordionShell } from "../components/AccordionShell";
 
 function LoginSecuritySection() {
@@ -53,6 +53,54 @@ function LoginSecuritySection() {
   );
 }
 
+function QuizFocusControlSection() {
+  const { t } = useTranslation();
+  const [settings, setSettings] = useState<ConsoleQuizSecuritySettings | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.get<ConsoleQuizSecuritySettings>("/api/console/quiz-security-settings/").then(setSettings);
+  }, []);
+
+  async function toggleFocusControl(checked: boolean) {
+    setError(null);
+    setSaving(true);
+    try {
+      const updated = await api.patch<ConsoleQuizSecuritySettings>("/api/console/quiz-security-settings/", {
+        focus_control_enabled: checked,
+      });
+      setSettings(updated);
+    } catch (err) {
+      setError(err instanceof ApiError ? JSON.stringify(err.detail) : t("consoleQuizSecurity.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <AccordionShell icon={<EyeIcon />} title={t("consoleQuizSecurity.title")} enabled={!!settings?.focus_control_enabled} loading={!settings}>
+      {settings && (
+        <>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("consoleQuizSecurity.subtitle")}</p>
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+            <input
+              type="checkbox"
+              checked={settings.focus_control_enabled}
+              disabled={saving}
+              onChange={(e) => toggleFocusControl(e.target.checked)}
+              className="h-4 w-4"
+            />
+            {t("consoleQuizSecurity.toggle")}
+          </label>
+          <p className="text-xs text-slate-400 dark:text-slate-500">{t("consoleQuizSecurity.hint")}</p>
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        </>
+      )}
+    </AccordionShell>
+  );
+}
+
 export function ConsoleSecurityPage() {
   const { t } = useTranslation();
   return (
@@ -62,6 +110,7 @@ export function ConsoleSecurityPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("consoleSecurityPage.subtitle")}</p>
       </div>
       <LoginSecuritySection />
+      <QuizFocusControlSection />
     </div>
   );
 }

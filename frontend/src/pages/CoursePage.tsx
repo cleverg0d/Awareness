@@ -41,6 +41,7 @@ export function CoursePage() {
   const [error, setError] = useState<string | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [showFocusWarning, setShowFocusWarning] = useState(false);
+  const [focusControlEnabled, setFocusControlEnabled] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +56,7 @@ export function CoursePage() {
           if (cancelled) return;
           setAttemptId(attempt.attempt_id);
           setQuestions(attempt.questions);
+          setFocusControlEnabled(attempt.focus_control_enabled);
 
           const resumeIndex = resolveResumeIndex(courseData, attempt.questions);
           setCurrentIndex(resumeIndex);
@@ -147,7 +149,7 @@ export function CoursePage() {
   // Анти-чит: уход со страницы теста. Первый раз - предупреждение, второй - принудительный
   // провал. Grace-period 1.5с не считает случайное системное уведомление нарушением.
   useEffect(() => {
-    if (!attemptId || result) return;
+    if (!attemptId || result || !focusControlEnabled) return;
     let graceTimer: ReturnType<typeof setTimeout> | null = null;
 
     function armGrace() {
@@ -177,7 +179,7 @@ export function CoursePage() {
       window.removeEventListener("blur", armGrace);
       window.removeEventListener("focus", disarmGrace);
     };
-  }, [attemptId, result, finishing]);
+  }, [attemptId, result, finishing, focusControlEnabled]);
 
   if (loading) {
     return (

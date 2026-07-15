@@ -132,6 +132,10 @@ export interface ConsoleSecuritySettings {
   login_lockout_enabled: boolean;
 }
 
+export interface ConsoleQuizSecuritySettings {
+  focus_control_enabled: boolean;
+}
+
 export interface ConsoleLoginLog {
   id: number;
   email: string;

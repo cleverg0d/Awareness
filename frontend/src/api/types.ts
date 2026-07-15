@@ -64,6 +64,7 @@ export interface StartAttemptResponse {
   started_at: string;
   submitted: boolean;
   questions: AttemptQuestion[];
+  focus_control_enabled: boolean;
 }
 
 export interface AnswerResponse {

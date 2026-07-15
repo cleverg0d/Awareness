@@ -30,6 +30,7 @@ urlpatterns = [
     path("api/console/", include("notifications.console_urls")),
     path("api/console/", include("badges.console_urls")),
     path("api/console/", include("leaderboard.console_urls")),
+    path("api/console/", include("quizzes.console_urls")),
 ]
 
 if settings.DEBUG:

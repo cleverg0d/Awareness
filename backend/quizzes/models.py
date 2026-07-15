@@ -63,6 +63,29 @@ class QuizAttempt(models.Model):
         self.save(update_fields=["score_percent", "passed", "submitted_at", "forfeited_reason"])
 
 
+class QuizSecuritySettings(models.Model):
+    """Единственная запись (singleton) - переключатель контроля фокуса на тесте, редактируется
+    из консоли (/console/security)."""
+
+    focus_control_enabled = models.BooleanField(
+        "Контроль фокуса на тесте",
+        default=True,
+        help_text="При выключении переключение на другое окно/вкладку во время теста не отслеживается и не приводит к автоматическому провалу попытки.",
+    )
+
+    class Meta:
+        verbose_name = "Настройки контроля фокуса"
+        verbose_name_plural = "Настройки контроля фокуса"
+
+    def __str__(self):
+        return "Настройки контроля фокуса"
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
 class AttemptAnswer(models.Model):
     attempt = models.ForeignKey(QuizAttempt, verbose_name="Попытка", on_delete=models.CASCADE, related_name="answers")
     question = models.ForeignKey(Question, verbose_name="Вопрос", on_delete=models.PROTECT, related_name="+")
