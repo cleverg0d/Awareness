@@ -6,6 +6,9 @@ import { ChangePasswordPage } from "./pages/ChangePasswordPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { CoursePage } from "./pages/CoursePage";
+import { BadgesPage } from "./pages/BadgesPage";
+import { BadgeVerificationPage } from "./pages/BadgeVerificationPage";
+import { LeaderboardPage } from "./pages/LeaderboardPage";
 import { ConsoleLayout } from "./console/ConsoleLayout";
 import { ConsoleDashboardPage } from "./console/pages/ConsoleDashboardPage";
 import { ConsoleWavesPage } from "./console/pages/ConsoleWavesPage";
@@ -18,6 +21,8 @@ import { ConsoleIntegrationsPage } from "./console/pages/ConsoleIntegrationsPage
 import { ConsoleNotificationsPage } from "./console/pages/ConsoleNotificationsPage";
 import { ConsoleSecurityPage } from "./console/pages/ConsoleSecurityPage";
 import { ConsoleLogsPage } from "./console/pages/ConsoleLogsPage";
+import { ConsoleBadgesPage } from "./console/pages/ConsoleBadgesPage";
+import { ConsoleLeaderboardPage } from "./console/pages/ConsoleLeaderboardPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -42,6 +47,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/change-password" element={<ChangePasswordPage />} />
+      <Route path="/badge/:token" element={<BadgeVerificationPage />} />
       <Route
         path="/"
         element={
@@ -66,6 +72,22 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/badges"
+        element={
+          <ProtectedRoute>
+            <BadgesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <LeaderboardPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/console" element={<ConsoleLayout />}>
         <Route index element={<ConsoleDashboardPage />} />
         <Route path="waves" element={<ConsoleWavesPage />} />
@@ -73,6 +95,7 @@ function App() {
         <Route path="courses" element={<ConsoleCoursesPage />} />
         <Route path="courses/:courseId" element={<ConsoleCourseEditPage />} />
         <Route path="problem-employees" element={<ConsoleProblemEmployeesPage />} />
+        <Route path="badges" element={<ConsoleBadgesPage />} />
         <Route
           path="employees"
           element={
@@ -103,6 +126,14 @@ function App() {
           element={
             <SuperAdminRoute>
               <ConsoleSecurityPage />
+            </SuperAdminRoute>
+          }
+        />
+        <Route
+          path="leaderboard"
+          element={
+            <SuperAdminRoute>
+              <ConsoleLeaderboardPage />
             </SuperAdminRoute>
           }
         />

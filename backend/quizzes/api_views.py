@@ -35,6 +35,7 @@ class AttemptDetailView(APIView):
                     "submitted": True,
                     "score_percent": attempt.score_percent,
                     "passed": attempt.passed,
+                    "forfeited_reason": attempt.forfeited_reason or None,
                 }
             )
         return Response(
@@ -61,6 +62,15 @@ class SubmitAttemptView(APIView):
     def post(self, request, attempt_id):
         try:
             result = services.submit_attempt(request.user, attempt_id)
+        except services.QuizError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(result)
+
+
+class ForfeitAttemptView(APIView):
+    def post(self, request, attempt_id):
+        try:
+            result = services.forfeit_attempt(request.user, attempt_id)
         except services.QuizError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(result)

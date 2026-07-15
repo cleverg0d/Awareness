@@ -1,10 +1,19 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 
+from .validators import validate_icon_extension, validate_icon_size
+
 
 class Course(models.Model):
     title = models.CharField("Название", max_length=255)
     description = models.TextField("Описание", blank=True)
+    icon = models.ImageField(
+        "Иконка",
+        upload_to="courses/icons/",
+        null=True,
+        blank=True,
+        validators=[validate_icon_extension, validate_icon_size],
+    )
     is_active = models.BooleanField("Активен", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

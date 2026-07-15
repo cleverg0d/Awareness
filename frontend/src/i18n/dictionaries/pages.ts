@@ -89,6 +89,10 @@ export const pagesRu = {
     nextChapter: "Следующая глава →",
     answerAllQuestions: "Ответьте на все вопросы главы, чтобы продолжить",
     chapterMisconfigured: "В этой главе нет вопросов теста. Сообщите администратору курса - продолжить обучение нельзя.",
+    focusWarning: "Вы покинули страницу теста. Ещё одна попытка уйти - и тест будет автоматически провален.",
+    focusWarningDismiss: "Понятно",
+    forfeited: "Тест провален автоматически",
+    forfeitedExplanation: "Вы дважды покидали страницу теста во время прохождения, поэтому попытка засчитана как проваленная.",
   },
   questionCard: {
     questionLabel: "Вопрос {index}",
@@ -202,6 +206,10 @@ export const pagesEn = {
     nextChapter: "Next chapter →",
     answerAllQuestions: "Answer all questions in the chapter to continue",
     chapterMisconfigured: "This chapter has no quiz questions. Contact the course administrator - you cannot continue.",
+    focusWarning: "You left the test page. One more attempt to leave will automatically fail the test.",
+    focusWarningDismiss: "Got it",
+    forfeited: "Test automatically failed",
+    forfeitedExplanation: "You left the test page twice during the attempt, so it has been recorded as failed.",
   },
   questionCard: {
     questionLabel: "Question {index}",

@@ -2,6 +2,7 @@ export interface ConsoleCourse {
   id: number;
   title: string;
   description: string;
+  icon: string | null;
   is_active: boolean;
   chapter_count: number;
   question_count: number;
@@ -57,6 +58,28 @@ export interface ConsoleWave {
   assignments_count: number;
   passed_count: number;
   created_at: string;
+}
+
+export interface ConsoleBadge {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  course: number | null;
+  course_title: string | null;
+  wave: number | null;
+  wave_name: string | null;
+  is_active: boolean;
+  awarded_count: number;
+  created_at: string;
+}
+
+export interface ConsoleBadgeSettings {
+  show_real_name: boolean;
+}
+
+export interface ConsoleLeaderboardSettings {
+  enabled: boolean;
 }
 
 export interface ConsoleWaveAssignment {

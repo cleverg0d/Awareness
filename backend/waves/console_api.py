@@ -35,7 +35,8 @@ class TrainingWaveAdminViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def overview(self, request):
-        return Response(compute_overview_stats())
+        days = request.query_params.get("days")
+        return Response(compute_overview_stats(days=int(days) if days else None))
 
     @action(detail=True, methods=["post"], url_path="assign-all")
     def assign_all(self, request, pk=None):

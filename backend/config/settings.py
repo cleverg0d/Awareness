@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "quizzes",
     "integrations",
     "notifications",
+    "badges",
+    "leaderboard",
 ]
 
 MIDDLEWARE = [
@@ -120,6 +122,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CKEditor 5 - без внешних CDN, загрузка файлов только для is_staff (дефолт пакета).
+# Без этого лимита пакет разрешает файлы любого размера (max_size=0 по умолчанию).
+CKEDITOR_5_MAX_FILE_SIZE = 5  # МБ
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
@@ -160,6 +164,7 @@ REST_FRAMEWORK = {
         "login": "10/min",
         "integration": "60/hour",
         "integration_invalid_auth": "120/hour",
+        "badge_public": "120/min",
     },
 }
 

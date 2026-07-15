@@ -17,6 +17,7 @@ export interface WaveAssignmentSummary {
   name: string;
   course_id: number;
   course_title: string;
+  course_icon: string | null;
   deadline: string;
   pass_threshold: number;
   max_attempts: number | null;
@@ -38,6 +39,7 @@ export interface CourseDetail {
   id: number;
   title: string;
   description: string;
+  icon: string | null;
   chapters: Chapter[];
 }
 
@@ -75,4 +77,47 @@ export interface SubmitAttemptResponse {
   pass_threshold: number;
   wrong_count: number;
   review_chapters: string[];
+  forfeited_reason: "focus_loss" | null;
+}
+
+export interface EmployeeBadgeSummary {
+  id: number;
+  badge_name: string;
+  icon: string;
+  course_title: string | null;
+  token: string;
+  awarded_at: string;
+}
+
+export interface BadgeVerification {
+  badge_name: string;
+  icon: string;
+  course_title: string | null;
+  awarded_at: string;
+  employee_name: string | null;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  full_name: string;
+  percent: number;
+  is_you: boolean;
+}
+
+export interface LeaderboardYou {
+  rank: number;
+  percent: number;
+  in_top: boolean;
+}
+
+export interface LeaderboardView {
+  total: number;
+  top: LeaderboardEntry[];
+  you: LeaderboardYou | null;
+}
+
+export interface LeaderboardResponse {
+  enabled: boolean;
+  company?: LeaderboardView;
+  department?: (LeaderboardView & { name: string }) | null;
 }

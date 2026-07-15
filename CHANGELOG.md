@@ -17,6 +17,39 @@ aren't published, so as not to point anyone still on an older version at what to
 
 Nothing planned yet.
 
+## [1.4.0] - 2026-07-13
+
+✚ Badges for completing courses - the admin sets an icon and an earning condition: a specific
+course, any course, or a specific wave (recurring annual/quarterly mandatory courses can have a
+distinct badge per cycle, without duplicating on an honest retake). Every employee gets a public
+confirmation page for an earned badge; a badge's icon can be reused from its course's icon in one
+click.
+
+✚ Courses now have an icon - shown on course cards in the employee portal and the console,
+uploaded right from the course page.
+
+✚ Employee leaderboard by percentage of courses passed - company-wide and by department. Off by
+default since it's an HR-sensitive topic; when enabled, employees see the top 10 and their own
+rank, not the full list.
+
+✚ Focus control during a quiz - switching to another window or tab while taking a quiz is
+recorded.
+
+✚ The dashboard now has a period filter and more expressive colored status tiles.
+
+✚ "Training waves", "Courses", "Badges", and "Leaderboard" are now grouped under one "Training"
+menu item with tabs - they used to be 4 separate sidebar items for what was really the same work.
+
+✓ The console is now responsive - tables scroll horizontally on narrow screens, forms collapse to
+a single column. The mobile sidebar is now a persistent narrow icon rail instead of an off-canvas
+drawer, with manual collapse on desktop.
+
+✓ The employee settings page was redesigned - a personal info card, a compact theme card, a more
+compact password-change form.
+
+✓ Uploaded image size is now limited - badge icons, course icons, and images in the chapter
+editor.
+
 ## [1.2.5] - 2026-07-13
 
 ✓ README and `.env.example` didn't say that `DJANGO_ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, and

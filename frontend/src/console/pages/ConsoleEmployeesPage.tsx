@@ -88,6 +88,7 @@ export function ConsoleEmployeesPage() {
       {employees === null && <p className="text-slate-500 dark:text-slate-400">{t("consoleEmployees.loading")}</p>}
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-left">
             <tr>
@@ -134,6 +135,7 @@ export function ConsoleEmployeesPage() {
             ))}
           </tbody>
         </table>
+        </div>
         {employees?.length === 0 && <p className="p-4 text-slate-500 dark:text-slate-400">{t("consoleEmployees.noEmployeesFound")}</p>}
       </div>
     </div>

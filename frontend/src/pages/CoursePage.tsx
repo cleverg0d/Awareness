@@ -40,6 +40,7 @@ export function CoursePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [finishing, setFinishing] = useState(false);
+  const [showFocusWarning, setShowFocusWarning] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,6 +127,58 @@ export function CoursePage() {
     }
   }
 
+  async function registerFocusViolation() {
+    if (!attemptId) return;
+    const key = `quiz-violations-${attemptId}`;
+    const count = Number(sessionStorage.getItem(key) ?? "0") + 1;
+    sessionStorage.setItem(key, String(count));
+    if (count === 1) {
+      setShowFocusWarning(true);
+      return;
+    }
+    try {
+      const res = await api.post<SubmitAttemptResponse>(`/api/attempts/${attemptId}/forfeit/`);
+      setResult(res);
+    } catch {
+      setError(t("course.finishError"));
+    }
+  }
+
+  // Анти-чит: уход со страницы теста. Первый раз - предупреждение, второй - принудительный
+  // провал. Grace-period 1.5с не считает случайное системное уведомление нарушением.
+  useEffect(() => {
+    if (!attemptId || result) return;
+    let graceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function armGrace() {
+      if (graceTimer || finishing) return;
+      graceTimer = setTimeout(() => {
+        graceTimer = null;
+        registerFocusViolation();
+      }, 1500);
+    }
+    function disarmGrace() {
+      if (graceTimer) {
+        clearTimeout(graceTimer);
+        graceTimer = null;
+      }
+    }
+    function onVisibility() {
+      if (document.hidden) armGrace();
+      else disarmGrace();
+    }
+
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("blur", armGrace);
+    window.addEventListener("focus", disarmGrace);
+    return () => {
+      disarmGrace();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("blur", armGrace);
+      window.removeEventListener("focus", disarmGrace);
+    };
+  }, [attemptId, result, finishing]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-100 dark:bg-slate-900">
@@ -151,8 +204,11 @@ export function CoursePage() {
         <main className="max-w-2xl mx-auto px-4 py-12">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 text-center">
             <h1 className={`text-3xl font-bold ${result.passed ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
-              {result.passed ? t("course.passed") : t("course.notPassed")}
+              {result.forfeited_reason ? t("course.forfeited") : result.passed ? t("course.passed") : t("course.notPassed")}
             </h1>
+            {result.forfeited_reason && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{t("course.forfeitedExplanation")}</p>
+            )}
             <p className="mt-2 text-slate-600 dark:text-slate-300">
               {t("course.resultScore", { score: result.score_percent, threshold: result.pass_threshold })}
             </p>
@@ -175,7 +231,10 @@ export function CoursePage() {
         <Link to="/" className="text-sm text-blue-600 hover:underline">
           {t("course.backToCoursesLink")}
         </Link>
-        <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mt-1 mb-1">{course.title}</h1>
+        <div className="flex items-center gap-3 mt-1 mb-1">
+          {course.icon && <img src={course.icon} alt="" className="w-10 h-10 rounded-lg object-contain shrink-0" />}
+          <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{course.title}</h1>
+        </div>
 
         {alreadyPassed ? (
           <>
@@ -224,6 +283,26 @@ export function CoursePage() {
             </aside>
 
             <div className="flex-1 min-w-0">
+              <select
+                value={currentIndex}
+                onChange={(e) => goToChapter(Number(e.target.value))}
+                className="md:hidden w-full mb-4 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:text-slate-100"
+              >
+                {chapters.map((ch, i) => (
+                  <option key={ch.id} value={i} disabled={i > maxUnlocked}>
+                    {t("course.chapterLabel", { number: i + 1 })} - {ch.title}
+                    {isChapterComplete(ch) ? " ✓" : ""}
+                  </option>
+                ))}
+              </select>
+              {showFocusWarning && (
+                <div className="mb-6 bg-amber-50 dark:bg-amber-950 border border-amber-300 dark:border-amber-800 rounded-xl p-4 flex items-center justify-between gap-4">
+                  <p className="text-sm text-amber-900 dark:text-amber-300">{t("course.focusWarning")}</p>
+                  <button onClick={() => setShowFocusWarning(false)} className="shrink-0 text-amber-700 hover:underline text-sm">
+                    {t("course.focusWarningDismiss")}
+                  </button>
+                </div>
+              )}
               {chapters[currentIndex] && (
                 <ChapterContent
                   chapter={chapters[currentIndex]}

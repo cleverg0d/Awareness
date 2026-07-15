@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api, ApiError } from "../../api/client";
 import type { ConsoleCourse, ConsoleWave } from "../../api/consoleTypes";
 import { WaveStatusBadge } from "../components/WaveStatusBadge";
+import { TrainingTabs } from "../components/TrainingTabs";
 import { formatDate } from "../../utils/date";
 import { isRedundant } from "../../utils/text";
 import { useTranslation } from "../../context/LanguageContext";
@@ -52,6 +53,7 @@ export function ConsoleWavesPage() {
 
   return (
     <div>
+      <TrainingTabs />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{t("consoleWaves.title")}</h1>
         <button
@@ -64,7 +66,7 @@ export function ConsoleWavesPage() {
 
       {showForm && (
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mb-6 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label className="text-sm text-slate-600 dark:text-slate-200">
               {t("consoleWaves.waveNameLabel")}
               <input
@@ -142,6 +144,7 @@ export function ConsoleWavesPage() {
       {waves === null && <p className="text-slate-500 dark:text-slate-400">{t("consoleWaves.loading")}</p>}
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-left">
             <tr>
@@ -180,6 +183,7 @@ export function ConsoleWavesPage() {
             ))}
           </tbody>
         </table>
+        </div>
         {waves?.length === 0 && <p className="p-4 text-slate-500 dark:text-slate-400">{t("consoleWaves.noWaves")}</p>}
       </div>
     </div>

@@ -55,6 +55,16 @@ export function ConsoleCourseEditPage() {
     reload();
   }
 
+  async function handleIconChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!course || !file) return;
+    const body = new FormData();
+    body.append("icon", file);
+    await api.patchForm(`/api/console/courses/${course.id}/`, body);
+    reload();
+  }
+
   function startEditingContent(chapterId: number, title: string) {
     setChapterTitleDraft(title);
     setEditingContentFor(chapterId);
@@ -160,9 +170,22 @@ export function ConsoleCourseEditPage() {
           </div>
         ) : (
           <div className="flex items-start justify-between gap-3 mt-1">
-            <div className="min-w-0">
-              <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{course.title}</h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{course.description}</p>
+            <div className="flex items-start gap-3 min-w-0">
+              <label
+                className="shrink-0 w-14 h-14 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer overflow-hidden hover:border-blue-400"
+                title={t("consoleCourseEdit.changeIcon")}
+              >
+                {course.icon ? (
+                  <img src={course.icon} alt="" className="w-full h-full object-contain" />
+                ) : (
+                  <span className="text-xs text-slate-400 text-center px-1">{t("consoleCourseEdit.courseIconLabel")}</span>
+                )}
+                <input type="file" accept="image/*" className="hidden" onChange={handleIconChange} />
+              </label>
+              <div className="min-w-0">
+                <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">{course.title}</h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{course.description}</p>
+              </div>
             </div>
             <button
               onClick={startEditingCourseInfo}

@@ -17,8 +17,11 @@ export const profileRu = {
   console: {
     title: "Консоль ИБ-обучения",
     backToPortal: "К пользовательскому порталу",
+    collapseMenu: "Свернуть меню",
+    expandMenu: "Развернуть меню",
     nav: {
       dashboard: "Дашборд",
+      training: "Обучение",
       waves: "Волны обучения",
       courses: "Курсы",
       problemEmployees: "Проблемные сотрудники",
@@ -50,8 +53,11 @@ export const profileEn = {
   console: {
     title: "Training console",
     backToPortal: "Back to portal",
+    collapseMenu: "Collapse menu",
+    expandMenu: "Expand menu",
     nav: {
       dashboard: "Dashboard",
+      training: "Training",
       waves: "Training waves",
       courses: "Courses",
       problemEmployees: "At-risk employees",

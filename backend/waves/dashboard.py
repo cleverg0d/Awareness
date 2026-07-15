@@ -44,11 +44,17 @@ def compute_wave_stats(wave):
     return compute_stats_for_assignments(assignments)
 
 
-def compute_overview_stats():
-    """Те же агрегации, но сквозно по всем волнам и курсам сразу - для общей сводки дашборда."""
+def compute_overview_stats(days=None):
+    """Те же агрегации, но сквозно по всем волнам и курсам сразу - для общей сводки дашборда.
+    days - фильтр периода отчета по дате старта волны (7/30/90/180/365), None - за все время."""
+    from django.utils import timezone
+
     from .models import WaveAssignment
 
-    assignments = WaveAssignment.objects.select_related("department_snapshot").prefetch_related("attempts")
+    assignments = WaveAssignment.objects.select_related("department_snapshot", "wave").prefetch_related("attempts")
+    if days:
+        since = timezone.localdate() - timezone.timedelta(days=days)
+        assignments = assignments.filter(wave__start_date__gte=since)
     return compute_stats_for_assignments(assignments)
 
 

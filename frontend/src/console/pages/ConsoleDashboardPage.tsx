@@ -136,24 +136,38 @@ function StatsCharts({ stats }: { stats: WaveStats }) {
   );
 }
 
+const TILE_COLORS: Record<string, string> = {
+  slate: "bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200",
+  amber: "bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300",
+  green: "bg-green-50 dark:bg-green-950 text-green-800 dark:text-green-300",
+  red: "bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-300",
+  blue: "bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-300",
+};
+
 function OverviewSummary({ stats }: { stats: WaveStats }) {
   const { t } = useTranslation();
   const total = Object.values(stats.status_counts).reduce((sum, v) => sum + v, 0);
   const passed = stats.status_counts.passed ?? 0;
+  const notStarted = stats.status_counts.not_started ?? 0;
+  const inProgress = stats.status_counts.in_progress ?? 0;
+  const failed = stats.status_counts.failed ?? 0;
   const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
 
   const tiles = [
-    { label: t("consoleDashboard.overviewTotal"), value: total },
-    { label: t("consoleDashboard.overviewPassed"), value: passed },
-    { label: t("consoleDashboard.overviewPassRate"), value: `${passRate}%` },
+    { label: t("consoleDashboard.overviewTotal"), value: total, color: "slate" },
+    { label: t("consoleDashboard.overviewPassRate"), value: `${passRate}%`, color: "blue" },
+    { label: t("consoleDashboard.statusPassed"), value: passed, color: "green" },
+    { label: t("consoleDashboard.statusInProgress"), value: inProgress, color: "amber" },
+    { label: t("consoleDashboard.statusFailed"), value: failed, color: "red" },
+    { label: t("consoleDashboard.statusNotStarted"), value: notStarted, color: "slate" },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
       {tiles.map((tile) => (
-        <div key={tile.label} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4">
-          <p className="text-xs text-slate-500 dark:text-slate-400">{tile.label}</p>
-          <p className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mt-1">{tile.value}</p>
+        <div key={tile.label} className={`rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 ${TILE_COLORS[tile.color]}`}>
+          <p className="text-xs opacity-80">{tile.label}</p>
+          <p className="text-2xl font-semibold mt-1">{tile.value}</p>
         </div>
       ))}
     </div>
@@ -166,14 +180,19 @@ export function ConsoleDashboardPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [stats, setStats] = useState<WaveStats | null>(null);
   const [overviewStats, setOverviewStats] = useState<WaveStats | null>(null);
+  const [periodDays, setPeriodDays] = useState<string>("");
 
   useEffect(() => {
     api.get<ConsoleWave[]>("/api/console/waves/").then((data) => {
       setWaves(data);
       if (data.length > 0) setSelectedId(data[0].id);
     });
-    api.get<WaveStats>("/api/console/waves/overview/").then(setOverviewStats);
   }, []);
+
+  useEffect(() => {
+    const query = periodDays ? `?days=${periodDays}` : "";
+    api.get<WaveStats>(`/api/console/waves/overview/${query}`).then(setOverviewStats);
+  }, [periodDays]);
 
   useEffect(() => {
     if (selectedId === null) {
@@ -195,7 +214,23 @@ export function ConsoleDashboardPage() {
       </div>
 
       <section className="mb-10">
-        <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">{t("consoleDashboard.overviewTitle")}</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300">{t("consoleDashboard.overviewTitle")}</h2>
+          <label className="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-2">
+            {t("consoleDashboard.periodLabel")}
+            <select
+              value={periodDays}
+              onChange={(e) => setPeriodDays(e.target.value)}
+              className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-slate-700 dark:text-slate-100"
+            >
+              <option value="">{t("consoleDashboard.periodAll")}</option>
+              <option value="30">{t("consoleDashboard.period30")}</option>
+              <option value="90">{t("consoleDashboard.period90")}</option>
+              <option value="180">{t("consoleDashboard.period180")}</option>
+              <option value="365">{t("consoleDashboard.period365")}</option>
+            </select>
+          </label>
+        </div>
         {overviewStats ? (
           <>
             <OverviewSummary stats={overviewStats} />
